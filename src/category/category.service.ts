@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { PrismaService } from "src/prisma.service";
 import { returnCategoryObject } from "./return-category.object";
@@ -61,8 +65,6 @@ export class CategoryService {
   }
 
   async delete(id: string) {
-    console.log(id);
-
     try {
       return await this.prisma.category.delete({
         where: {
@@ -70,7 +72,9 @@ export class CategoryService {
         },
       });
     } catch (e) {
-       throw new BadRequestException('Category have products, delete product and try again')
-      }
+      throw new BadRequestException(
+        "Category have products, delete product and try again"
+      );
+    }
   }
 }
