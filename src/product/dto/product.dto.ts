@@ -1,4 +1,4 @@
-import { IsBoolean, IsJSON, IsNumber, IsOptional, isString, IsString } from "class-validator";
+import { IsArray, IsBoolean, IsJSON, IsNumber, IsOptional, isString, IsString } from "class-validator";
 import { ApiProperty } from '@nestjs/swagger';
 export class CreateProductDto {
   @IsString()
@@ -14,6 +14,7 @@ export class CreateProductDto {
   name: string
 
   @IsBoolean()
+  
   @ApiProperty()
   active  : boolean
 
@@ -29,13 +30,13 @@ export class CreateProductDto {
   @ApiProperty()
   weight : number
 
-  @IsJSON()
+  @IsArray()
   @ApiProperty()
-  filling: any
+  filling: []
 
-  @IsJSON()
+  @IsArray()
   @ApiProperty()
-  allergens: any
+  allergens: []
 
   @IsString()
   @ApiProperty()
@@ -79,18 +80,15 @@ export class UpdateProductDto {
   @ApiProperty()
   weight : number
 
-  @IsJSON()
-  @IsOptional()
+  @IsArray()
   @ApiProperty()
-  filling: any
+  filling: []
 
-  @IsJSON()
-  @IsOptional()
+  @IsArray()
   @ApiProperty()
-  allergens: any
+  allergens: []
 
-  @IsString()
-  @ApiProperty()
-  @IsOptional()
   categoryId: string
+
+
 }

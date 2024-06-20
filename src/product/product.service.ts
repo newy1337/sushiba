@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma.service';
 import { slugify } from 'src/utils/generate-slug';
@@ -42,6 +42,13 @@ export class ProductService {
       }
 
       async create(dto:CreateProductDto) {
+        
+        const slug = slugify(dto.name);
+
+        this.checkSlugExist(slug);
+        this.checkCategoryExist(dto.categoryId)
+
+
         return await this.prisma.product.create({
             data: {
                 ...dto,
@@ -52,6 +59,12 @@ export class ProductService {
       }
 
       async update(id: string,dto: UpdateProductDto) {
+
+        const slug = slugify(dto.name);
+
+
+        this.checkSlugExist(slug);
+        this.checkCategoryExist(dto.categoryId)
         console.log(id)
         let dataToUpdate : any = {}
 
@@ -77,4 +90,39 @@ export class ProductService {
             }
         })
       }
+
+
+
+      async checkSlugExist(slug : string) {
+
+        const isExists =  await this.prisma.product.findUnique({
+          where: {
+            'slug' : slug
+          }
+        })
+
+
+        if(isExists) {
+          if(isExists) throw new ConflictException('Product with same slug already exist')
+        }
+
+      }
+
+
+      async checkCategoryExist(categoryId : string) {
+
+        const isExists =  await this.prisma.category.findFirst({
+          where: {
+            'id' : categoryId
+          }
+        })
+
+
+
+        if(isExists) {
+          if(isExists) throw new ConflictException('Category not found')
+        }
+
+      }
+
 }
