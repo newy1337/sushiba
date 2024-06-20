@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma.service';
 import { slugify } from 'src/utils/generate-slug';
@@ -63,9 +63,10 @@ export class ProductService {
         const slug = slugify(dto.name);
 
 
-        this.checkSlugExist(slug);
-        this.checkCategoryExist(dto.categoryId)
-        console.log(id)
+        console.log(slug)
+        await this.checkSlugExist(slug);
+        await this.checkCategoryExist(dto.categoryId)
+
         let dataToUpdate : any = {}
 
         if(dto.categoryId) {
@@ -84,28 +85,35 @@ export class ProductService {
     }
 
       async delete(id: string) {
-        return await this.prisma.product.delete({
+
+        try {
+          return await this.prisma.product.delete({
             where: {
-                id
-            }
-        })
+              id,
+            },
+          });
+        } catch (e) {
+           throw new BadRequestException('Category have products, delete product and try again')
+          }
       }
+    
 
 
 
       async checkSlugExist(slug : string) {
+        console.log(slug)
 
-        const isExists =  await this.prisma.product.findUnique({
+        const isExists =  await this.prisma.product.findFirst({
           where: {
             'slug' : slug
           }
         })
+        console.log(isExists)
 
 
-        if(isExists) {
-          if(isExists) throw new ConflictException('Product with same slug already exist')
-        }
-
+  
+        if(isExists) throw new ConflictException('Product with same slug already exist')
+    
       }
 
 
@@ -118,10 +126,7 @@ export class ProductService {
         })
 
 
-
-        if(isExists) {
-          if(isExists) throw new ConflictException('Category not found')
-        }
+          if(!isExists) throw new ConflictException('Category not found')
 
       }
 
