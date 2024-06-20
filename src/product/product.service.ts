@@ -47,7 +47,7 @@ export class ProductService {
   async byCategory(categorySlug: string) {
     const products = await this.prisma.product.findMany({
       where: { category: { slug: categorySlug } },
-      select: returnProductObject,
+      // select: returnProductObject,
     });
 
     if (!products) throw new NotFoundException("Products not found");
