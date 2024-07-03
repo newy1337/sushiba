@@ -2,22 +2,22 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
-} from "@nestjs/common";
-import { JwtService } from "@nestjs/jwt";
-import { PrismaService } from "src/prisma.service";
-import { returnCategoryObject } from "./return-category.object";
-import { CreateCategoryDto, UpdateCategoryDto } from "./dto/category.dto";
-import { slugify } from "src/utils/generate-slug";
+} from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { PrismaService } from 'src/prisma.service';
+import { returnCategoryObject } from './return-category.object';
+import { CreateCategoryDto, UpdateCategoryDto } from './dto/category.dto';
+import { slugify } from 'src/utils/generate-slug';
 
 @Injectable()
 export class CategoryService {
   constructor(
     private prisma: PrismaService,
-    private jwt: JwtService
+    private jwt: JwtService,
   ) {}
 
   async getAll() {
-    return await this.prisma.category.findMany({
+    return this.prisma.category.findMany({
       select: returnCategoryObject,
     });
   }
@@ -28,7 +28,7 @@ export class CategoryService {
       select: returnCategoryObject,
     });
 
-    if (!category) throw new NotFoundException("Category not found");
+    if (!category) throw new NotFoundException('Category not found');
     return category;
   }
   async bySlug(slug: string) {
@@ -37,12 +37,12 @@ export class CategoryService {
       select: returnCategoryObject,
     });
 
-    if (!category) throw new NotFoundException("Category not found");
+    if (!category) throw new NotFoundException('Category not found');
     return category;
   }
 
   async create(dto: CreateCategoryDto) {
-    return await this.prisma.category.create({
+    return this.prisma.category.create({
       data: {
         name: dto.name,
         slug: slugify(dto.name),
@@ -53,7 +53,7 @@ export class CategoryService {
   async update(id: string, dto: UpdateCategoryDto) {
     console.log(id);
 
-    return await this.prisma.category.update({
+    return this.prisma.category.update({
       where: {
         id,
       },
@@ -73,7 +73,7 @@ export class CategoryService {
       });
     } catch (e) {
       throw new BadRequestException(
-        "Category have products, delete product and try again"
+        'Category have products, delete product and try again',
       );
     }
   }

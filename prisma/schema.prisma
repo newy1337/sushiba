@@ -13,26 +13,24 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model User {
   id String @id @default(cuid())
 
-  name String
-  phone String @default("")
-  email String @unique
-  password String
+  name      String   @default("")
+  phone     String   @unique()
+  email     String   @default("")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-  orders Order[] 
-   @@map("user")
+  orders    Order[]
+
+  @@map("user")
 }
 
-
 model Product {
-  id          String    @id @default(cuid())
+  id          String      @id @default(cuid())
   image       String
   name        String
-  slug        String  @unique
+  slug        String      @unique
   description String
   active      Boolean
   price       Int
@@ -41,27 +39,47 @@ model Product {
   filling     Json
   allergens   Json
   categoryId  String      @map("category_id")
-  category    Category @relation(fields: [categoryId], references: [id])
+  category    Category    @relation(fields: [categoryId], references: [id])
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+  orderItems  OrderItem[]
 
-
-  @@map("product") 
+  @@map("product")
 }
 
 model Category {
-  id    String @id @default(cuid())
-  name  String
-  slug  String @unique
-  products Product[] 
+  id        String    @id @default(cuid())
+  name      String
+  slug      String    @unique
+  products  Product[]
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
   @@map("category")
 }
 
-
 model Order {
-  id    String @id @default(cuid())
-  name  String
-  products Json   @default("{}")
-  user User? @relation(fields: [userId], references: [id])
-  userId String?
+  id        String      @id @default(cuid())
+  items     OrderItem[]
+  total     Int
+  user      User?       @relation(fields: [userId], references: [id])
+  userId    String?     @map("user_id")
+  createdAt DateTime    @default(now()) @map("created_at")
+  updatedAt DateTime    @updatedAt @map("updated_at")
 
   @@map("order")
+}
+
+model OrderItem {
+  id       String @id @default(cuid())
+  quantity Int
+  price    Int
+
+  order     Order?   @relation(fields: [orderId], references: [id])
+  orderId   String?  @map("order_id")
+  product   Product? @relation(fields: [productId], references: [id])
+  productId String?  @map("product_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 }

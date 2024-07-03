@@ -1,94 +1,98 @@
-import { IsArray, IsBoolean, IsJSON, IsNumber, IsOptional, isString, IsString } from "class-validator";
+import {
+  IsArray,
+  IsBoolean,
+  IsJSON,
+  IsNumber,
+  IsOptional,
+  isString,
+  IsString,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 export class CreateProductDto {
   @IsString()
   @ApiProperty()
-  image :string
+  image: string;
 
   @IsString()
   @ApiProperty()
-  description  : string
+  description: string;
 
   @IsString()
   @ApiProperty()
-  name: string
+  name: string;
 
   @IsBoolean()
-  
   @ApiProperty()
-  active  : boolean
+  active: boolean;
 
   @IsNumber()
   @ApiProperty()
-  price : number
+  price: number;
 
   @IsNumber()
   @ApiProperty()
-  servingSize : number
+  servingSize: number;
 
   @IsNumber()
   @ApiProperty()
-  weight : number
+  weight: number;
 
   @IsArray()
   @ApiProperty()
-  filling: []
+  filling: [];
 
   @IsArray()
   @ApiProperty()
-  allergens: []
+  allergens: [];
 
   @IsString()
   @ApiProperty()
-  categoryId: string
+  categoryId: string;
 }
-
 
 export class UpdateProductDto {
   @IsString()
   @IsOptional()
   @ApiProperty()
-  image :string
+  image: string;
 
   @IsString()
   @IsOptional()
   @ApiProperty()
-  description  : string
+  description: string;
 
   @IsString()
   @IsOptional()
   @ApiProperty()
-  name: string
+  name: string;
 
   @IsBoolean()
   @IsOptional()
   @ApiProperty()
-  active  : boolean
+  active: boolean;
 
   @IsNumber()
   @IsOptional()
   @ApiProperty()
-  price : number
+  price: number;
 
   @IsNumber()
   @IsOptional()
   @ApiProperty()
-  servingSize : number
+  servingSize: number;
 
   @IsNumber()
   @IsOptional()
   @ApiProperty()
-  weight : number
+  weight: number;
 
   @IsArray()
   @ApiProperty()
-  filling: []
+  filling: [];
 
   @IsArray()
   @ApiProperty()
-  allergens: []
+  allergens: [];
 
-  categoryId: string
-
-
+  categoryId: string;
 }

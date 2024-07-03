@@ -3,22 +3,22 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
-} from "@nestjs/common";
-import { JwtService } from "@nestjs/jwt";
-import { PrismaService } from "src/prisma.service";
-import { slugify } from "src/utils/generate-slug";
-import { returnProductObject } from "./return-product.object";
-import { CreateProductDto, UpdateProductDto } from "./dto/product.dto";
+} from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { PrismaService } from 'src/prisma.service';
+import { slugify } from 'src/utils/generate-slug';
+import { returnProductObject } from './return-product.object';
+import { CreateProductDto, UpdateProductDto } from './dto/product.dto';
 
 @Injectable()
 export class ProductService {
   constructor(
     private prisma: PrismaService,
-    private jwt: JwtService
+    private jwt: JwtService,
   ) {}
 
   async getAll() {
-    return await this.prisma.product.findMany({
+    return this.prisma.product.findMany({
       include: {
         category: true,
       },
@@ -28,19 +28,19 @@ export class ProductService {
   async byId(id: string) {
     const products = await this.prisma.product.findUnique({
       where: { id: id },
-      select: returnProductObject,
+      // select: returnProductObject,
     });
 
-    if (!products) throw new NotFoundException("Product not found");
+    if (!products) throw new NotFoundException('Product not found');
     return products;
   }
   async bySlug(slug: string) {
     const products = await this.prisma.product.findUnique({
       where: { slug: slug },
-      select: returnProductObject,
+      // select: returnProductObject,
     });
 
-    if (!products) throw new NotFoundException("Products not found");
+    if (!products) throw new NotFoundException('Products not found');
     return products;
   }
 
@@ -50,7 +50,7 @@ export class ProductService {
       // select: returnProductObject,
     });
 
-    if (!products) throw new NotFoundException("Products not found");
+    if (!products) throw new NotFoundException('Products not found');
     return products;
   }
 
@@ -60,7 +60,7 @@ export class ProductService {
     await this.checkSlugExist(slug);
     await this.checkCategoryExist(dto.categoryId);
 
-    return await this.prisma.product.create({
+    return this.prisma.product.create({
       data: {
         ...dto,
         slug: slugify(dto.name),
@@ -85,7 +85,7 @@ export class ProductService {
 
     dataToUpdate = { ...dataToUpdate, ...dto };
 
-    return await this.prisma.product.update({
+    return this.prisma.product.update({
       where: { id },
       data: dataToUpdate,
     });
@@ -100,7 +100,7 @@ export class ProductService {
       });
     } catch (e) {
       throw new BadRequestException(
-        "Category have products, delete product and try again"
+        'Category have products, delete product and try again',
       );
     }
   }
@@ -113,7 +113,7 @@ export class ProductService {
     });
 
     if (isExists)
-      throw new ConflictException("Product with same slug already exist");
+      throw new ConflictException('Product with same slug already exist');
   }
 
   async checkCategoryExist(categoryId: string) {
@@ -123,6 +123,6 @@ export class ProductService {
       },
     });
 
-    if (!isExists) throw new ConflictException("Category not found");
+    if (!isExists) throw new ConflictException('Category not found');
   }
 }

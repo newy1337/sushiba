@@ -26,7 +26,8 @@ async function bootstrap() {
       scheme: 'bearer',
       bearerFormat: 'JWT',
       in: 'header',
-      description: '<h5>Insert the received access token during authorization</h5>',
+      description:
+        '<h5>Insert the received access token during authorization</h5>',
     })
     .build();
   const document = SwaggerModule.createDocument(app, config);

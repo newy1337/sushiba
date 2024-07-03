@@ -1,4 +1,4 @@
-import { SwaggerCustomOptions } from '@nestjs/swagger'
+import { SwaggerCustomOptions } from '@nestjs/swagger';
 
 export const swaggerOptions: SwaggerCustomOptions = {
   customSiteTitle: 'Space CRM API',
@@ -26,4 +26,4 @@ export const swaggerOptions: SwaggerCustomOptions = {
     displayRequestDuration: true,
     persistAuthorization: true,
   },
-}
+};

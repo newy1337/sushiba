@@ -7,6 +7,6 @@ import { JwtService } from '@nestjs/jwt';
 
 @Module({
   controllers: [ProductController],
-  providers: [ProductService,PrismaService,CategoryService, JwtService],
+  providers: [ProductService, PrismaService, CategoryService, JwtService],
 })
 export class ProductModule {}

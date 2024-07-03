@@ -1,34 +1,23 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsEmail, IsPhoneNumber, IsString, MinLength } from "class-validator"
+import { ApiProperty } from '@nestjs/swagger';
+import { IsPhoneNumber, IsString } from 'class-validator';
 
-export class RegisterDto {
-    @IsEmail()
-    @ApiProperty()
-    email: string;
-    @MinLength(6,{'message': 'Password must be at least 6 characters'})
-    @ApiProperty()
-    @IsString()
-    password : string
-    @ApiProperty()
-    @IsPhoneNumber()
-    phone: string
-    @IsString()
-    @ApiProperty()
-    name: string
+export class sendOTP {
+  @ApiProperty()
+  @IsPhoneNumber()
+  phone: string;
 }
 
-export class LoginDto {
-    @IsEmail()
-    @ApiProperty()
-    email: string;
-    @IsString()
-    @ApiProperty()
-    password: string
-
+export class verifyOTP {
+  @IsPhoneNumber()
+  @ApiProperty()
+  phone: string;
+  @ApiProperty()
+  @IsString()
+  otp: string;
 }
 
 export class RefreshTokenDto {
-    @IsString()
-    @ApiProperty()
-    refreshToken: string
+  @IsString()
+  @ApiProperty()
+  refreshToken: string;
 }

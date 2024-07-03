@@ -1,8 +1,7 @@
-import { Prisma } from "@prisma/client";
+import { Prisma } from '@prisma/client';
 
 export const returnProductObject: Prisma.ProductSelect = {
-    id: true,
-    name: true,
-    slug: true,
-    
-}
+  id: true,
+  name: true,
+  slug: true,
+};

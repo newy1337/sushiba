@@ -6,7 +6,6 @@ import { PrismaService } from './prisma.service';
 import { User } from '@prisma/client';
 import { Injectable } from '@nestjs/common';
 
-
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(

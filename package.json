@@ -37,6 +37,8 @@
     "passport-jwt": "^4.0.1",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
+    "stripe": "^16.1.0",
+    "twilio": "^5.2.2",
     "vercel": "^34.2.7"
   },
   "devDependencies": {
