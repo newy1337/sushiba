@@ -1,7 +1,7 @@
 import { SwaggerCustomOptions } from '@nestjs/swagger';
 
 export const swaggerOptions: SwaggerCustomOptions = {
-  customSiteTitle: 'Sushiba CRM API',
+  customSiteTitle: 'Sushiba API',
   customCss: `
   body { background-color: #1b1b1b }
   p { color: #aaa }
