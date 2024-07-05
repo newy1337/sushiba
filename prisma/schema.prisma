@@ -16,9 +16,9 @@ datasource db {
 model User {
   id String @id @default(cuid())
 
-  name      String   @default("")
+  name      String?
   phone     String   @unique()
-  email     String   @default("")
+  email     String?
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
   orders    Order[]

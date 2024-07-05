@@ -1,15 +1,21 @@
 import {
   Body,
+  Controller,
   HttpCode,
+  Post,
   UsePipes,
   ValidationPipe,
-  Controller,
-  Post,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { RefreshTokenDto, sendOTP, verifyOTP } from './dto/auth.dto';
+import {
+  CompleteAuthDto,
+  RefreshTokenDto,
+  sendOTPDto,
+  verifyUserDto,
+} from './dto/auth.dto';
 import { Auth } from 'src/decorators/auth.decorator';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { CurrentUser } from '../decorators/user.decorator';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -20,7 +26,7 @@ export class AuthController {
   @UsePipes(new ValidationPipe())
   @HttpCode(200)
   @Post('sendOtp')
-  async register(@Body() dto: sendOTP) {
+  async register(@Body() dto: sendOTPDto) {
     return this.authService.sendOTP(dto);
   }
 
@@ -28,8 +34,8 @@ export class AuthController {
   @UsePipes(new ValidationPipe())
   @HttpCode(200)
   @Post('verifyOtp')
-  async login(@Body() dto: verifyOTP) {
-    return this.authService.verifyOTP(dto);
+  async login(@Body() dto: verifyUserDto) {
+    return this.authService.verifyUser(dto);
   }
 
   @ApiOperation({ summary: 'User Token Refresh' })
@@ -40,5 +46,18 @@ export class AuthController {
   @Post('token/refresh')
   async refresh(@Body() dto: RefreshTokenDto) {
     return this.authService.refreshToken(dto.refreshToken);
+  }
+
+  @ApiOperation({ summary: 'User Token Refresh' })
+  @UsePipes(new ValidationPipe())
+  @HttpCode(200)
+  @Auth()
+  @ApiBearerAuth()
+  @Post('auth/complete')
+  async completeAuth(
+    @Body() dto: CompleteAuthDto,
+    @CurrentUser('id') userId: string,
+  ) {
+    return this.authService.completeAuth(dto, userId);
   }
 }

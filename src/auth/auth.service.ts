@@ -1,13 +1,13 @@
 import {
   BadRequestException,
   Injectable,
-  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { JwtService } from '@nestjs/jwt';
-import { sendOTP, verifyOTP } from './dto/auth.dto';
+import { CompleteAuthDto, sendOTPDto, verifyUserDto } from './dto/auth.dto';
 import { Twilio } from 'twilio';
+import { Auth } from '../decorators/auth.decorator';
 
 @Injectable()
 export class AuthService {
@@ -24,18 +24,19 @@ export class AuthService {
     this.verifySid = process.env.TWILIO_VERIFY_SID;
   }
 
-  async sendOTP(dto: sendOTP): Promise<void> {
+  async sendOTP(dto: sendOTPDto) {
     try {
       await this.twilioClient.verify.v2
         .services(this.verifySid)
         .verifications.create({ to: dto.phone, channel: 'sms' });
+      return { message: 'Otp sent' };
     } catch (error) {
       console.log(error);
       throw new BadRequestException('Failed to send OTP');
     }
   }
 
-  async verifyOTP(dto: verifyOTP): Promise<{ user: any; tokens: any }> {
+  async verifyUser(dto: verifyUserDto) {
     const verificationCheck = await this.twilioClient.verify.v2
       .services(this.verifySid)
       .verificationChecks.create({ to: dto.phone, code: dto.otp });
@@ -47,14 +48,24 @@ export class AuthService {
     let user = await this.prisma.user.findUnique({
       where: { phone: dto.phone },
     });
+    delete dto.otp;
     if (!user) {
       user = await this.prisma.user.create({
-        data: { phone: dto.phone },
+        data: dto,
       });
     }
 
     const tokens = await this.generateToken(user.id);
-    return { user, tokens };
+    return { user, tokens, needCompleteAuth: true };
+  }
+
+  @Auth()
+  async completeAuth(dto: CompleteAuthDto, userId: string) {
+    this.prisma.user.update({
+      where: { id: userId },
+      data: dto,
+    });
+    return { message: 'User complete full auth successfully' };
   }
 
   async refreshToken(refreshToken: string) {
@@ -76,5 +87,4 @@ export class AuthService {
     const refreshToken = this.jwt.sign(data, { expiresIn: '24h' });
     return { accessToken, refreshToken };
   }
-
 }
