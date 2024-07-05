@@ -7,7 +7,6 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma.service';
 import { slugify } from 'src/utils/generate-slug';
-import { returnProductObject } from './return-product.object';
 import { CreateProductDto, UpdateProductDto } from './dto/product.dto';
 
 @Injectable()
@@ -18,7 +17,6 @@ export class ProductService {
   ) {}
 
   async getAll() {
-    return this.prisma.
     return this.prisma.product.findMany({
       include: {
         category: true,
