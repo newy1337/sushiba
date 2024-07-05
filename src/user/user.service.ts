@@ -7,10 +7,10 @@ export class UserService {
   constructor(private prisma: PrismaService) {}
 
   async getMe(user: User) {
-    let needCompleteAuth = false;
+    let needCompleteRegister = false;
     if (!user.name || !user.email) {
-      needCompleteAuth = true;
+      needCompleteRegister = true;
     }
-    return { ...user, needCompleteAuth };
+    return { ...user, needCompleteRegister };
   }
 }

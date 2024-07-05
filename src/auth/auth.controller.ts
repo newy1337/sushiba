@@ -48,7 +48,7 @@ export class AuthController {
     return this.authService.refreshToken(dto.refreshToken);
   }
 
-  @ApiOperation({ summary: 'User Token Refresh' })
+  @ApiOperation({ summary: 'Complete Auth' })
   @UsePipes(new ValidationPipe())
   @HttpCode(200)
   @Auth()
