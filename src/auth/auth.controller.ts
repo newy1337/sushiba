@@ -30,10 +30,10 @@ export class AuthController {
     return this.authService.sendOTP(dto);
   }
 
-  @ApiOperation({ summary: 'Verify otp' })
+  @ApiOperation({ summary: 'Verify User' })
   @UsePipes(new ValidationPipe())
   @HttpCode(200)
-  @Post('verifyOtp')
+  @Post('verifyUser')
   async login(@Body() dto: verifyUserDto) {
     return this.authService.verifyUser(dto);
   }
@@ -53,7 +53,7 @@ export class AuthController {
   @HttpCode(200)
   @Auth()
   @ApiBearerAuth()
-  @Post('auth/complete')
+  @Post('complete')
   async completeAuth(
     @Body() dto: CompleteAuthDto,
     @CurrentUser('id') userId: string,
