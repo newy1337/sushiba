@@ -26,10 +26,10 @@ export class AuthService {
 
   async sendOTP(dto: sendOTPDto) {
     try {
-      await this.twilioClient.verify.v2
-        .services(this.verifySid)
-        .verifications.create({ to: dto.phone, channel: 'sms' });
-      return { message: 'Otp sent' };
+      // await this.twilioClient.verify.v2
+      //   .services(this.verifySid)
+      //   .verifications.create({ to: dto.phone, channel: 'sms' });
+      return { message: 'Otp sent', dto };
     } catch (error) {
       console.log(error);
       throw new BadRequestException('Failed to send OTP');

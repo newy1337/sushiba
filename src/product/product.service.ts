@@ -18,6 +18,7 @@ export class ProductService {
   ) {}
 
   async getAll() {
+    return this.prisma.
     return this.prisma.product.findMany({
       include: {
         category: true,
