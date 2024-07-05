@@ -56,16 +56,16 @@ export class AuthService {
     }
 
     const tokens = await this.generateToken(user.id);
-    return { user, tokens, needCompleteAuth: true };
+    return { user, tokens, needCompleteRegister: true };
   }
 
   @Auth()
   async completeAuth(dto: CompleteAuthDto, userId: string) {
-    this.prisma.user.update({
+    const user = await this.prisma.user.update({
       where: { id: userId },
       data: dto,
     });
-    return { message: 'User complete full auth successfully' };
+    return { message: 'User complete full auth successfully', user };
   }
 
   async refreshToken(refreshToken: string) {
