@@ -87,10 +87,10 @@ model OrderItem {
 model WorkingHours {
   id            String   @id @default(cuid())
   day           String   @unique
-  deliveryStart String   @map("delivery_start")
-  deliveryEnd   String   @map("delivery_end")
-  takeawayStart String   @map("takeaway_start")
-  takeawayEnd   String   @map("takeaway_end")
+  deliveryStart String?  @map("delivery_start")
+  deliveryEnd   String?  @map("delivery_end")
+  takeawayStart String?  @map("takeaway_start")
+  takeawayEnd   String?  @map("takeaway_end")
   createdAt     DateTime @default(now()) @map("created_at")
   updatedAt     DateTime @updatedAt @map("updated_at")
 }
