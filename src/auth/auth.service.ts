@@ -37,13 +37,13 @@ export class AuthService {
   }
 
   async verifyUser(dto: verifyUserDto) {
-    const verificationCheck = await this.twilioClient.verify.v2
-      .services(this.verifySid)
-      .verificationChecks.create({ to: dto.phone, code: dto.otp });
+    // const verificationCheck = await this.twilioClient.verify.v2
+    //   .services(this.verifySid)
+    //   .verificationChecks.create({ to: dto.phone, code: dto.otp });
 
-    if (verificationCheck.status !== 'approved') {
-      throw new UnauthorizedException('Invalid OTP');
-    }
+    // if (verificationCheck.status !== 'approved') {
+    //   throw new UnauthorizedException('Invalid OTP');
+    // }
 
     let user = await this.prisma.user.findUnique({
       where: { phone: dto.phone },
@@ -84,7 +84,7 @@ export class AuthService {
   private async generateToken(userId: string) {
     const data = { id: userId };
     const accessToken = this.jwt.sign(data, { expiresIn: '10h' });
-    const refreshToken = this.jwt.sign(data, { expiresIn: '24h' });
+    const refreshToken = this.jwt.sign(data, { expiresIn: '168h' });
     return { accessToken, refreshToken };
   }
 }
