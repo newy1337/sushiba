@@ -5,10 +5,7 @@ import { CreatePromoCodeDto, UpdatePromoCodeDto } from './dto/promocode.dto';
 
 @Injectable()
 export class PromocodeService {
-  constructor(
-    private prisma: PrismaService,
-    private jwt: JwtService,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   async getAll() {
     return this.prisma.promoCode.findMany({});
