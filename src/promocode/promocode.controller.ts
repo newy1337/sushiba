@@ -16,7 +16,7 @@ import { Auth } from '../decorators/auth.decorator';
 import { CreatePromoCodeDto, UpdatePromoCodeDto } from './dto/promocode.dto';
 import { CurrentUser } from '../decorators/user.decorator';
 
-@Controller('promocode')
+@Controller('promocodes')
 @ApiTags('Promo codes')
 export class PromocodeController {
   constructor(private readonly promocodeService: PromocodeService) {}
@@ -28,8 +28,9 @@ export class PromocodeController {
   }
 
   @ApiOperation({ summary: 'Get my promo' })
-  @Get()
+  @Get('my')
   @Auth()
+  @ApiBearerAuth()
   async getMy(@CurrentUser('id') userId?: string) {
     return this.promocodeService.getMy(userId);
   }
