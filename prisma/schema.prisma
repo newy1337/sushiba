@@ -17,11 +17,12 @@ model User {
   id String @id @default(cuid())
 
   name      String?
-  phone     String   @unique()
+  phone     String      @unique()
   email     String?
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt DateTime    @default(now()) @map("created_at")
+  updatedAt DateTime    @updatedAt @map("updated_at")
   orders    Order[]
+  PromoCode PromoCode[]
 
   @@map("user")
 }
@@ -36,6 +37,7 @@ model Product {
   price       Int
   servingSize Int
   weight      Int
+  discount    Int         @default(0)
   filling     Json
   allergens   Json
   categoryId  String      @map("category_id")
@@ -93,4 +95,19 @@ model WorkingHours {
   takeawayEnd   String?  @map("takeaway_end")
   createdAt     DateTime @default(now()) @map("created_at")
   updatedAt     DateTime @updatedAt @map("updated_at")
+}
+
+model PromoCode {
+  id              String   @id @default(cuid())
+  code            String   @unique
+  active          Boolean  @default(false)
+  discount        Int
+  validFrom       DateTime
+  validTo         DateTime
+  activationLimit Int      @default(0)
+  activationCount Int      @default(0)
+  user            User?    @relation(fields: [userId], references: [id])
+  userId          String?  @map("user_id")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
 }

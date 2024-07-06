@@ -28,7 +28,7 @@ export class ProductController {
   @ApiOperation({ summary: 'Get products by id' })
   @Get('by-id/:id')
   async getById(@Param('id') id: string) {
-    return this.productService.byId(id);
+    return await this.productService.byId(id);
   }
 
   @ApiOperation({ summary: 'Get products by slug' })

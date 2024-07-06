@@ -8,6 +8,7 @@ import { ProductModule } from './product/product.module';
 import { UserModule } from './user/user.module';
 import { OrderModule } from './order/order.module';
 import { SettingsModule } from './settings/settings.module';
+import { PromocodeModule } from './promocode/promocode.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { SettingsModule } from './settings/settings.module';
     UserModule,
     OrderModule,
     SettingsModule,
+    PromocodeModule,
   ],
   controllers: [AppController],
   providers: [AppService],

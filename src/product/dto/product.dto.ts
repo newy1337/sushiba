@@ -1,11 +1,14 @@
 import {
   IsArray,
   IsBoolean,
+  IsInt,
   IsJSON,
   IsNumber,
   IsOptional,
   isString,
   IsString,
+  Max,
+  Min,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 export class CreateProductDto {
@@ -36,6 +39,13 @@ export class CreateProductDto {
   @IsNumber()
   @ApiProperty()
   weight: number;
+
+  @IsInt()
+  @IsOptional()
+  @ApiProperty()
+  @Min(0)
+  @Max(100)
+  discount?: number;
 
   @IsArray()
   @ApiProperty()
@@ -75,6 +85,13 @@ export class UpdateProductDto {
   @IsOptional()
   @ApiProperty()
   price: number;
+
+  @IsInt()
+  @IsOptional()
+  @ApiProperty()
+  @Min(0)
+  @Max(100)
+  discount?: number;
 
   @IsNumber()
   @IsOptional()
