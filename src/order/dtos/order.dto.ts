@@ -17,9 +17,9 @@ import { Type } from 'class-transformer';
 import { IsOnlyOneSelected } from '../validators/deliverytype.validator';
 
 export class OrderItemDto {
-  @ApiProperty()
-  @IsNumber()
-  price: number;
+  // @ApiProperty()
+  // @IsNumber()
+  // price: number;
 
   @ApiProperty()
   @IsString()
