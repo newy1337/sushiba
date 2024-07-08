@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import * as process from 'node:process';
 import Stripe from 'stripe';
@@ -59,16 +59,16 @@ export class OrderService {
       },
     });
 
-    if (products.length !== productIds.length) {
-      throw new NotFoundException('One or more products not found');
-    }
+    // if (products.length !== productIds.length) {
+    //   throw new NotFoundException('One or more products not found');
+    // }
 
     let total = dto.items.reduce((acc, item) => {
       const product = products.find((p) => p.id === item.productId);
       return acc + product.price * item.quantity;
     }, 0);
 
-    if (!dto.promoCode) {
+    if (dto.promoCode !== undefined) {
       const promoCode = await this.promoCode.validate(dto.promoCode, userId);
       total = total - promoCode.discount;
     }
