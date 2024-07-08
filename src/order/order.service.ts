@@ -101,7 +101,7 @@ export class OrderService {
 
     try {
       const session = await this.stripe.checkout.sessions.create({
-        payment_method_types: ['card', 'multibanco', 'paypal'],
+        payment_method_types: ['card', 'multibanco'],
         line_items: dto.items.map((item) => ({
           price_data: {
             currency: 'eur',
