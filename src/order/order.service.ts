@@ -75,9 +75,10 @@ export class OrderService {
     if (total < 0.5) {
       throw new Error('Amount must be at least $0.50 USD');
     }
+    const orderDetailsJson = JSON.parse(JSON.stringify(dto.details));
     const order = await this.prisma.order.create({
       data: {
-        orderDetails: dto.details[0],
+        orderDetails: orderDetailsJson,
         items: {
           create: dto.items.map((item) => ({
             productId: item.productId,
