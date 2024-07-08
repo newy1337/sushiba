@@ -8,6 +8,7 @@ import { PromocodeService } from '../promocode/promocode.service';
 @Injectable()
 export class OrderService {
   private stripe: Stripe;
+
   constructor(
     private prisma: PrismaService,
     private promoCode: PromocodeService,
@@ -47,6 +48,7 @@ export class OrderService {
       },
     });
   }
+
   async makeOrder(dto: OrderDto, userId: string) {
     const productIds = dto.items.map((item) => item.productId);
 
@@ -70,13 +72,13 @@ export class OrderService {
 
     if (dto.promoCode !== undefined) {
       const promoCode = await this.promoCode.validate(dto.promoCode, userId);
-      total = total - promoCode.discount;
+      total -= promoCode.discount;
     }
     if (total < 0.5) {
       throw new Error('Amount must be at least $0.50 USD');
     }
     const orderDetailsJson = JSON.parse(JSON.stringify(dto.details));
-    const order = await this.prisma.order.create({
+    await this.prisma.order.create({
       data: {
         details: orderDetailsJson,
         items: {
@@ -95,14 +97,32 @@ export class OrderService {
 
     const totalInCents = Math.round(total * 100);
 
-    const paymentIntents = await this.stripe.paymentIntents.create({
-      amount: totalInCents,
-      currency: 'eur',
-      automatic_payment_methods: {
-        enabled: true,
-      },
-      description: 'Order #' + order.id,
-    });
-    return { clientSecret: paymentIntents.client_secret };
+    try {
+      const session = await this.stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        line_items: [
+          {
+            price_data: {
+              currency: 'usd',
+              product_data: {
+                name: 'Your Product Name',
+              },
+              unit_amount: totalInCents,
+            },
+            quantity: 1,
+          },
+        ],
+        mode: 'payment',
+        payment_intent_data: {
+          setup_future_usage: 'on_session',
+        },
+        success_url: 'https://yourdomain.com/success',
+        cancel_url: 'https://yourdomain.com/cancel',
+      });
+      return session.id;
+    } catch (error) {
+      console.error('Error creating checkout session:', error);
+      throw error;
+    }
   }
 }
