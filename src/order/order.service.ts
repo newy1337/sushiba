@@ -78,7 +78,7 @@ export class OrderService {
     const orderDetailsJson = JSON.parse(JSON.stringify(dto.details));
     const order = await this.prisma.order.create({
       data: {
-        orderDetails: orderDetailsJson,
+        details: orderDetailsJson,
         items: {
           create: dto.items.map((item) => ({
             productId: item.productId,
