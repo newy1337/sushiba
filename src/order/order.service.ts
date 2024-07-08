@@ -85,7 +85,9 @@ export class OrderService {
           create: dto.items.map((item) => ({
             productId: item.productId,
             quantity: item.quantity,
-            price: products.find((p) => p.id === item.productId).price,
+            price:
+              products.find((p) => p.id === item.productId).price *
+              item.quantity,
           })),
         },
         total,
@@ -99,19 +101,19 @@ export class OrderService {
 
     try {
       const session = await this.stripe.checkout.sessions.create({
-        payment_method_types: ['card', 'multibanco'],
-        line_items: [
-          {
-            price_data: {
-              currency: 'usd',
-              product_data: {
-                name: 'Your Product Name',
-              },
-              unit_amount: totalInCents,
+        line_items: dto.items.map((item) => ({
+          price_data: {
+            currency: 'eur',
+            product_data: {
+              name: products.find((p) => p.id === item.productId).name,
             },
-            quantity: 1,
+            unit_amount:
+              products.find((p) => p.id === item.productId).price *
+              item.quantity *
+              100,
           },
-        ],
+          quantity: item.quantity,
+        })),
         mode: 'payment',
         payment_intent_data: {
           setup_future_usage: 'on_session',
