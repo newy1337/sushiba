@@ -116,9 +116,9 @@ export class OrderService {
           quantity: item.quantity,
         })),
         mode: 'payment',
-        payment_intent_data: {
-          setup_future_usage: 'on_session',
-        },
+        // payment_intent_data: {
+        //   setup_future_usage: 'on_session',
+        // },
         success_url: 'https://yourdomain.com/success',
         cancel_url: 'https://yourdomain.com/cancel',
       });
