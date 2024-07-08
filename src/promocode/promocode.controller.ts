@@ -35,7 +35,7 @@ export class PromocodeController {
     return this.promocodeService.getMy(userId);
   }
 
-  @ApiOperation({ summary: 'Update  promocode' })
+  @ApiOperation({ summary: 'Update  promo code' })
   @Auth()
   @ApiBearerAuth()
   @HttpCode(200)
@@ -47,7 +47,7 @@ export class PromocodeController {
 
   @Auth()
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Create promocode' })
+  @ApiOperation({ summary: 'Create promo code' })
   @HttpCode(200)
   @Post()
   @UsePipes(ValidationPipe)
@@ -55,7 +55,7 @@ export class PromocodeController {
     return this.promocodeService.create(dto);
   }
 
-  @ApiOperation({ summary: 'Delete Promocode' })
+  @ApiOperation({ summary: 'delete Promo code' })
   @Auth()
   @ApiBearerAuth()
   @HttpCode(200)
@@ -65,14 +65,16 @@ export class PromocodeController {
     return this.promocodeService.delete(id);
   }
 
-  @ApiOperation({ summary: 'Validate promocode' })
+  @ApiOperation({ summary: 'Validate promo code' })
   @ApiBearerAuth()
   @HttpCode(200)
+  @Post('validate')
   @UsePipes(ValidationPipe)
   async validate(
     @Param('code') code: string,
     @CurrentUser('id') userId?: string,
   ) {
+    console.log(1);
     return this.promocodeService.validate(code, userId);
   }
 }

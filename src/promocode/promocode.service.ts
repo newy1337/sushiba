@@ -1,6 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
-import { JwtService } from '@nestjs/jwt';
 import { CreatePromoCodeDto, UpdatePromoCodeDto } from './dto/promocode.dto';
 
 @Injectable()
@@ -83,14 +86,16 @@ export class PromocodeService {
     });
 
     if (!promoCode) {
-      throw new Error('Invalid or expired promo code');
+      throw new NotFoundException('Invalid or expired promo code');
     }
 
     if (
       promoCode.activationLimit &&
       promoCode.activationCount >= promoCode.activationLimit
     ) {
-      throw new Error('Promo code has reached its activation limit');
+      throw new NotFoundException(
+        'Promo code has reached its activation limit',
+      );
     }
 
     return promoCode;
