@@ -119,7 +119,7 @@ export class OrderService {
         success_url: 'https://yourdomain.com/success',
         cancel_url: 'https://yourdomain.com/cancel',
       });
-      return session.id;
+      return { sessionId: session.id };
     } catch (error) {
       console.error('Error creating checkout session:', error);
       throw error;
