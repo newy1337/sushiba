@@ -109,9 +109,7 @@ export class OrderService {
               name: products.find((p) => p.id === item.productId).name,
             },
             unit_amount:
-              products.find((p) => p.id === item.productId).price *
-              item.quantity *
-              100,
+              products.find((p) => p.id === item.productId).price * 100,
           },
           quantity: item.quantity,
         })),
