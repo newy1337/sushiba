@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import * as process from 'node:process';
 import Stripe from 'stripe';
-import { OrderDto } from './dtos/order.dto';
+import { OrderDto, UpdateOrderStatusDto } from './dtos/order.dto';
 import { PromocodeService } from '../promocode/promocode.service';
+import { sendSMS } from '../utils/twilio';
 
 @Injectable()
 export class OrderService {
@@ -49,7 +50,15 @@ export class OrderService {
     });
   }
 
-  async makeOrder(dto: OrderDto, userId: string) {
+  async makeOrder(dto: OrderDto, userId?: string) {
+    if (!userId) {
+      const user = await this.prisma.user.create({
+        data: {
+          phone: dto.details.phone,
+        },
+      });
+      userId = user.id;
+    }
     const productIds = dto.items.map((item) => item.productId);
 
     // Проверяем наличие всех productId в базе данных
@@ -78,7 +87,7 @@ export class OrderService {
       throw new Error('Amount must be at least $0.50 USD');
     }
     const orderDetailsJson = JSON.parse(JSON.stringify(dto.details));
-    await this.prisma.order.create({
+    const order = await this.prisma.order.create({
       data: {
         details: orderDetailsJson,
         items: {
@@ -115,6 +124,9 @@ export class OrderService {
           },
           quantity: item.quantity,
         })),
+        metadata: {
+          orderId: order.id,
+        },
         mode: 'payment',
         payment_intent_data: {
           setup_future_usage: 'on_session',
@@ -127,5 +139,84 @@ export class OrderService {
       console.error('Error creating checkout session:', error);
       throw error;
     }
+  }
+
+  async updateStatus(dto: UpdateOrderStatusDto, orderId: string) {
+    const order = await this.prisma.order.findFirst({
+      where: {
+        id: orderId,
+      },
+    });
+
+    if (!order) {
+      throw new NotFoundException('Order not found');
+    }
+
+    const orderUpdated = await this.prisma.order.update({
+      where: {
+        id: orderId,
+      },
+      data: {
+        statusId: dto.statusId,
+      },
+      include: {
+        user: true,
+        status: true,
+      },
+    });
+    console.log(orderUpdated);
+    await sendSMS(
+      orderUpdated.user.phone,
+      'You order: ' +
+        orderUpdated.id +
+        ' changed status to: ' +
+        orderUpdated.status.name,
+    );
+    return { message: 'Order statuses updated' };
+  }
+
+  async handleWebhook(payload: any, signature: string) {
+    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+    let event: Stripe.Event;
+
+    try {
+      event = this.stripe.webhooks.constructEvent(
+        payload,
+        signature,
+        webhookSecret,
+      );
+    } catch (err) {
+      throw new Error(`Webhook Error: ${err.message}`);
+    }
+
+    // Handle the event
+    switch (event.type) {
+      case 'checkout.session.completed':
+        const session = event.data.object as Stripe.Checkout.Session;
+        await this.handleCheckoutSessionCompleted(session);
+        break;
+      default:
+        console.log(`Unhandled event type ${event.type}`);
+    }
+  }
+
+  private async handleCheckoutSessionCompleted(
+    session: Stripe.Checkout.Session,
+  ) {
+    const orderId = session.metadata.orderId;
+
+    const order = await this.prisma.order.update({
+      where: { id: orderId },
+      data: { statusId: 2 },
+      include: {
+        user: true,
+      },
+    });
+
+    await sendSMS(order.user.phone, 'You order: ' + orderId + ' created!');
+
+    console.log(`Order ${orderId} has been updated to 'paid'.`);
+    return { message: 'Order statuses updated' };
   }
 }

@@ -61,15 +61,17 @@ model Category {
 }
 
 model Order {
-  id        String      @id @default(cuid())
+  id        String         @id @default(cuid())
   items     OrderItem[]
   total     Int
-  user      User?       @relation(fields: [userId], references: [id])
-  userId    String?     @map("user_id")
+  user      User?          @relation(fields: [userId], references: [id])
+  userId    String?        @map("user_id")
   promocode String?
   details   Json
-  createdAt DateTime    @default(now()) @map("created_at")
-  updatedAt DateTime    @updatedAt @map("updated_at")
+  status    OrderStatuses? @relation(fields: [statusId], references: [id])
+  statusId  Int?           @default(1) @map("status_id")
+  createdAt DateTime       @default(now()) @map("created_at")
+  updatedAt DateTime       @updatedAt @map("updated_at")
 
   @@map("order")
 }
@@ -112,4 +114,11 @@ model PromoCode {
   userId          String?  @map("user_id")
   createdAt       DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
+}
+
+model OrderStatuses {
+  id     Int     @id @default(autoincrement())
+  name   String  @unique
+  desc   String
+  orders Order[]
 }

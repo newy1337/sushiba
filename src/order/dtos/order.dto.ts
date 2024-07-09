@@ -98,3 +98,9 @@ export class OrderDto {
   @Type(() => OrderDetailsDto)
   details: OrderDetailsDto;
 }
+
+export class UpdateOrderStatusDto {
+  @ApiProperty()
+  @IsNumber()
+  statusId: number;
+}
