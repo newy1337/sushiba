@@ -110,7 +110,7 @@ export class OrderService {
 
     try {
       const session = await this.stripe.checkout.sessions.create({
-        payment_method_types: ['card', 'multibanco', 'paypal'],
+        payment_method_types: ['card', 'multibanco'],
         line_items: dto.items.map((item) => ({
           price_data: {
             currency: 'eur',
@@ -118,9 +118,7 @@ export class OrderService {
               name: products.find((p) => p.id === item.productId).name,
             },
             unit_amount:
-              products.find((p) => p.id === item.productId).price *
-              item.quantity *
-              100,
+              products.find((p) => p.id === item.productId).price * 100,
           },
           quantity: item.quantity,
         })),
@@ -128,9 +126,9 @@ export class OrderService {
           orderId: order.id,
         },
         mode: 'payment',
-        payment_intent_data: {
-          setup_future_usage: 'on_session',
-        },
+        // payment_intent_data: {
+        //   setup_future_usage: 'on_session',
+        // },
         success_url: 'https://yourdomain.com/success',
         cancel_url: 'https://yourdomain.com/cancel',
       });
