@@ -307,7 +307,7 @@ async function main() {
   console.log('Seeding... products');
 
   for (const product of Products) {
-    await prisma.category.upsert({
+    await prisma.product.upsert({
       where: { slug: product.slug },
       update: {},
       create: product,
