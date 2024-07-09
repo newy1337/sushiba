@@ -199,16 +199,18 @@ export class OrderService {
 
     // Handle the event
     switch (event.type) {
-      case 'checkout.session.completed':
+      case 'checkout.session.async_payment_succeeded':
         const session = event.data.object as Stripe.Checkout.Session;
-        await this.handleCheckoutSessionCompleted(session);
+        if (session.payment_status === 'paid') {
+          await this.handleCheckoutSessionPaymentCompleted(session);
+        }
         break;
       default:
         console.log(`Unhandled event type ${event.type}`);
     }
   }
 
-  private async handleCheckoutSessionCompleted(
+  private async handleCheckoutSessionPaymentCompleted(
     session: Stripe.Checkout.Session,
   ) {
     const orderId = session.metadata.orderId;
