@@ -34,7 +34,7 @@ model Product {
   slug        String      @unique
   description String
   active      Boolean
-  price       Int
+  price       Float
   servingSize Int
   weight      Int
   discount    Int         @default(0)
