@@ -199,7 +199,7 @@ export class OrderService {
 
     // Handle the event
     switch (event.type) {
-      case 'checkout.session.async_payment_succeeded':
+      case 'checkout.session.completed':
         const session = event.data.object as Stripe.Checkout.Session;
         if (session.payment_status === 'paid') {
           await this.handleCheckoutSessionPaymentCompleted(session);
