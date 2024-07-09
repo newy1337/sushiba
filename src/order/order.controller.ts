@@ -16,6 +16,7 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Auth } from '../decorators/auth.decorator';
 import { CurrentUser } from '../decorators/user.decorator';
 import { OrderDto, UpdateOrderStatusDto } from './dtos/order.dto';
+import RequestWithRawBody from '../interfaces/requestWithRawBody.interface';
 
 @ApiTags('Orders')
 @Controller('orders')
@@ -62,10 +63,10 @@ export class OrderController {
   @ApiOperation({ summary: 'Get stripe webhook' })
   @Post('webhook')
   async handleStripeWebhook(
-    @Req() req: Request,
+    @Req() request: RequestWithRawBody,
     @Headers('stripe-signature') signature: string,
   ) {
-    const payload = req.body;
+    const payload = request.rawBody;
     await this.orderService.handleWebhook(payload, signature);
     return { received: true };
   }
