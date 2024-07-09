@@ -182,7 +182,7 @@ export class OrderService {
     return { message: 'Order statuses updated' };
   }
 
-  async handleWebhook(payload: any, signature: string) {
+  async handleWebhook(payload: string, signature: string) {
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
     let event: Stripe.Event;
