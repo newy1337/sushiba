@@ -9,7 +9,7 @@ function rawBodyMiddleware() {
       response: Response,
       buffer: Buffer,
     ) => {
-      if (request.url === '/webhook' && Buffer.isBuffer(buffer)) {
+      if (request.url === '/orders/webhook' && Buffer.isBuffer(buffer)) {
         request.rawBody = Buffer.from(buffer);
       }
       return true;
