@@ -7,6 +7,7 @@ import {
   Param,
   Post,
   Put,
+  Req,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -61,9 +62,10 @@ export class OrderController {
   @ApiOperation({ summary: 'Get stripe webhook' })
   @Post('webhook')
   async handleStripeWebhook(
-    @Body() payload: any,
+    @Req() req: Request,
     @Headers('stripe-signature') signature: string,
   ) {
+    const payload = req.body;
     await this.orderService.handleWebhook(payload, signature);
     return { received: true };
   }

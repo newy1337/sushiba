@@ -52,11 +52,20 @@ export class OrderService {
 
   async makeOrder(dto: OrderDto, userId?: string) {
     if (!userId) {
-      const user = await this.prisma.user.create({
-        data: {
+      let user = await this.prisma.user.findUnique({
+        where: {
           phone: dto.details.phone,
         },
       });
+
+      if (!user) {
+        user = await this.prisma.user.create({
+          data: {
+            phone: dto.details.phone,
+          },
+        });
+      }
+
       userId = user.id;
     }
     const productIds = dto.items.map((item) => item.productId);
