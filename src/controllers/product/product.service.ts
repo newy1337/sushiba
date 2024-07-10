@@ -75,11 +75,13 @@ export class ProductService {
   }
 
   async update(id: string, dto: UpdateProductDto) {
-    const slug = slugify(dto.name);
+    if (dto.name) {
+      const slug = slugify(dto.name);
 
-    console.log(slug);
-    await this.checkSlugExist(slug);
-    await this.checkCategoryExist(dto.categoryId);
+      console.log(slug);
+      await this.checkSlugExist(slug);
+      await this.checkCategoryExist(dto.categoryId);
+    }
 
     let dataToUpdate: any = {};
 
