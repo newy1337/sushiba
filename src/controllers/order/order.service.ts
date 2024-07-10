@@ -175,7 +175,7 @@ export class OrderService {
     await sendSMS(
       orderUpdated.user.phone,
       'You order: ' +
-        orderUpdated.id +
+        orderUpdated.shortId +
         ' changed status to: ' +
         orderUpdated.status.name,
     );
@@ -223,7 +223,10 @@ export class OrderService {
       },
     });
 
-    await sendSMS(order.user.phone, 'You order: ' + orderId + ' created!');
+    await sendSMS(
+      order.user.phone,
+      'You order: ' + order.shortId + ' created!',
+    );
 
     console.log(`Order ${orderId} has been updated to 'paid'.`);
     return { message: 'Order statuses updated' };

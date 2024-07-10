@@ -62,7 +62,7 @@ model Category {
 
 model Order {
   id        String         @id @default(cuid())
-  short_id  Int            @unique @default(autoincrement())
+  shortId   Int            @unique @default(autoincrement()) @map("short_id")
   items     OrderItem[]
   total     Int
   user      User?          @relation(fields: [userId], references: [id])
