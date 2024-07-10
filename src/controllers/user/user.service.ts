@@ -34,7 +34,7 @@ export class UserService {
       throw new HttpException('User with same number already registered', 400);
     }
     delete dto.otp;
-    return this.prisma.user.updateMany({
+    return this.prisma.user.update({
       where: { id: user.id },
       data: dto,
     });
