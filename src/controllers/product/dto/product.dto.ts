@@ -8,11 +8,11 @@ import {
   Max,
   Min,
 } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateProductDto {
   @ApiProperty({ type: 'string', format: 'binary' })
-  image: any; // Это свойство будет типизировано как Express.Multer.File
+  image: any;
   @IsString()
   @ApiProperty()
   description: string;
@@ -101,11 +101,13 @@ export class UpdateProductDto {
   weight: number;
 
   @IsArray()
-  @ApiProperty()
+  @ApiPropertyOptional()
+  @IsOptional()
   filling: [];
 
   @IsArray()
-  @ApiProperty()
+  @ApiPropertyOptional()
+  @IsOptional()
   allergens: [];
 
   categoryId: string;
