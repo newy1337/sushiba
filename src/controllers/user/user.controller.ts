@@ -1,4 +1,11 @@
-import { Body, Controller, Get, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Put,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Auth } from '../../decorators/auth.decorator';
@@ -21,6 +28,7 @@ export class UserController {
 
   @ApiOperation({ summary: 'Update me' })
   @ApiBearerAuth()
+  @UsePipes(new ValidationPipe())
   @Put('')
   @Auth()
   async updateMe(@Body() dto: UpdateUserDto, @CurrentUser() user: User) {
