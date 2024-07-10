@@ -11,7 +11,7 @@ import {
 import { SettingsService } from './settings.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateDayDto, UpdateDayHoursDto } from './dto/settings.dto';
-import { Auth } from '../decorators/auth.decorator';
+import { Auth } from '../../decorators/auth.decorator';
 
 @Controller('settings')
 @ApiTags('Settings')

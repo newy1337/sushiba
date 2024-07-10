@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../prisma.service';
+import { PrismaService } from '../../prisma.service';
 import * as process from 'node:process';
 import Stripe from 'stripe';
 import { OrderDto, UpdateOrderStatusDto } from './dtos/order.dto';
 import { PromocodeService } from '../promocode/promocode.service';
-import { sendSMS } from '../utils/twilio';
+import { sendSMS } from '../../utils/twilio';
 
 @Injectable()
 export class OrderService {

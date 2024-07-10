@@ -13,10 +13,10 @@ import {
 } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Auth } from '../decorators/auth.decorator';
-import { CurrentUser } from '../decorators/user.decorator';
+import { Auth } from '../../decorators/auth.decorator';
+import { CurrentUser } from '../../decorators/user.decorator';
 import { OrderDto, UpdateOrderStatusDto } from './dtos/order.dto';
-import RequestWithRawBody from '../interfaces/requestWithRawBody.interface';
+import RequestWithRawBody from '../../interfaces/requestWithRawBody.interface';
 
 @ApiTags('Orders')
 @Controller('orders')

@@ -12,9 +12,9 @@ import {
 } from '@nestjs/common';
 import { PromocodeService } from './promocode.service';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Auth } from '../decorators/auth.decorator';
+import { Auth } from '../../decorators/auth.decorator';
 import { CreatePromoCodeDto, UpdatePromoCodeDto } from './dto/promocode.dto';
-import { CurrentUser } from '../decorators/user.decorator';
+import { CurrentUser } from '../../decorators/user.decorator';
 
 @Controller('promocodes')
 @ApiTags('Promo codes')

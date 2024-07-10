@@ -62,6 +62,7 @@ model Category {
 
 model Order {
   id        String         @id @default(cuid())
+  short_id  Int            @unique @default(autoincrement())
   items     OrderItem[]
   total     Int
   user      User?          @relation(fields: [userId], references: [id])
@@ -88,6 +89,8 @@ model OrderItem {
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("order_time")
 }
 
 model WorkingHours {
@@ -99,6 +102,8 @@ model WorkingHours {
   takeawayEnd   String?  @map("takeaway_end")
   createdAt     DateTime @default(now()) @map("created_at")
   updatedAt     DateTime @updatedAt @map("updated_at")
+
+  @@map("working_hours")
 }
 
 model PromoCode {
@@ -114,6 +119,8 @@ model PromoCode {
   userId          String?  @map("user_id")
   createdAt       DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@map("promocodes")
 }
 
 model OrderStatuses {
@@ -121,4 +128,6 @@ model OrderStatuses {
   name   String  @unique
   desc   String
   orders Order[]
+
+  @@map("order_statuses")
 }

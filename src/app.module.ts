@@ -1,14 +1,15 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AuthModule } from './auth/auth.module';
+import { AuthModule } from './controllers/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
-import { CategoryModule } from './category/category.module';
-import { ProductModule } from './product/product.module';
-import { UserModule } from './user/user.module';
-import { OrderModule } from './order/order.module';
-import { SettingsModule } from './settings/settings.module';
-import { PromocodeModule } from './promocode/promocode.module';
+import { CategoryModule } from './controllers/category/category.module';
+import { ProductModule } from './controllers/product/product.module';
+import { UserModule } from './controllers/user/user.module';
+import { OrderModule } from './controllers/order/order.module';
+import { SettingsModule } from './controllers/settings/settings.module';
+import { PromocodeModule } from './controllers/promocode/promocode.module';
+import { AwsConfigService } from './utils/aws.config';
 
 @Module({
   imports: [
@@ -22,6 +23,6 @@ import { PromocodeModule } from './promocode/promocode.module';
     PromocodeModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, AwsConfigService],
 })
 export class AppModule {}

@@ -8,12 +8,17 @@ import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma.service';
 import { slugify } from 'src/utils/generate-slug';
 import { CreateProductDto, UpdateProductDto } from './dto/product.dto';
+import { AwsConfigService } from '../../utils/aws.config';
+import { ConfigService } from '@nestjs/config';
+import { PutObjectCommand, PutObjectCommandInput } from '@aws-sdk/client-s3';
 
 @Injectable()
 export class ProductService {
   constructor(
     private prisma: PrismaService,
     private jwt: JwtService,
+    private readonly awsConfigService: AwsConfigService,
+    private config: ConfigService,
   ) {}
 
   async getAll() {
@@ -53,14 +58,16 @@ export class ProductService {
     return products;
   }
 
-  async create(dto: CreateProductDto) {
+  async create(dto: CreateProductDto, imageFile: Express.Multer.File) {
     const slug = slugify(dto.name);
 
     await this.checkSlugExist(slug);
     await this.checkCategoryExist(dto.categoryId);
+    const url = await this.uploadS3(slug, imageFile);
 
     return this.prisma.product.create({
       data: {
+        image: url,
         ...dto,
         slug: slugify(dto.name),
       },
@@ -123,5 +130,25 @@ export class ProductService {
     });
 
     if (!isExists) throw new ConflictException('Category not found');
+  }
+
+  private async uploadS3(slug: string, image: Express.Multer.File) {
+    const s3Client = this.awsConfigService.getS3Client();
+    const patch = `products/${slug}/${image.originalname}`;
+    const bucket = <string>'sushiba-bucket';
+
+    const uploadParams: PutObjectCommandInput = {
+      Bucket: bucket,
+      Key: patch,
+      Body: image.buffer,
+      ACL: 'public-read',
+    };
+    try {
+      await s3Client.send(new PutObjectCommand(uploadParams));
+      return `https://${bucket}.s3.amazonaws.com/${patch}`;
+    } catch (error) {
+      console.error('Error uploading image to S3:', error);
+      throw new Error('Failed to upload image to S3');
+    }
   }
 }

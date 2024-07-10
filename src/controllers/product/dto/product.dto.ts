@@ -2,20 +2,17 @@ import {
   IsArray,
   IsBoolean,
   IsInt,
-  IsJSON,
   IsNumber,
   IsOptional,
-  isString,
   IsString,
   Max,
   Min,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-export class CreateProductDto {
-  @IsString()
-  @ApiProperty()
-  image: string;
 
+export class CreateProductDto {
+  @ApiProperty({ type: 'string', format: 'binary' })
+  image: any; // Это свойство будет типизировано как Express.Multer.File
   @IsString()
   @ApiProperty()
   description: string;

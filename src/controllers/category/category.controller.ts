@@ -13,7 +13,7 @@ import {
 import { CategoryService } from './category.service';
 import { CreateCategoryDto, UpdateCategoryDto } from './dto/category.dto';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Auth } from '../decorators/auth.decorator';
+import { Auth } from '../../decorators/auth.decorator';
 
 @Controller('category')
 @ApiTags('Category')

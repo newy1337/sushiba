@@ -7,6 +7,7 @@ import {
   Param,
   Post,
   Put,
+  UploadedFile,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -14,6 +15,7 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ProductService } from './product.service';
 import { CreateProductDto, UpdateProductDto } from './dto/product.dto';
 import { Auth } from 'src/decorators/auth.decorator';
+
 @Controller('products')
 @ApiTags('Product')
 export class ProductController {
@@ -50,8 +52,11 @@ export class ProductController {
   @HttpCode(200)
   @Post()
   @UsePipes(ValidationPipe)
-  async create(@Body() dto: CreateProductDto) {
-    return this.productService.create(dto);
+  async create(
+    @Body() dto: CreateProductDto,
+    @UploadedFile() image: Express.Multer.File,
+  ) {
+    return this.productService.create(dto, image);
   }
 
   @Auth()

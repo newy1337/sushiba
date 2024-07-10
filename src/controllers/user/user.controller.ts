@@ -1,8 +1,8 @@
 import { Body, Controller, Get, Put } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Auth } from '../decorators/auth.decorator';
-import { CurrentUser } from '../decorators/user.decorator';
+import { Auth } from '../../decorators/auth.decorator';
+import { CurrentUser } from '../../decorators/user.decorator';
 import { User } from '@prisma/client';
 import { UpdateUserDto } from './dto/user.dto';
 

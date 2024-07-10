@@ -7,7 +7,7 @@ import { PrismaService } from 'src/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import { CompleteAuthDto, sendOTPDto, verifyUserDto } from './dto/auth.dto';
 import { Twilio } from 'twilio';
-import { Auth } from '../decorators/auth.decorator';
+import { Auth } from '../../decorators/auth.decorator';
 
 @Injectable()
 export class AuthService {
