@@ -33,7 +33,7 @@ export class OrderService {
   }
 
   async getById(id: string) {
-    return this.prisma.order.findUnique({
+    return this.prisma.order.findFirst({
       where: {
         id,
       },
