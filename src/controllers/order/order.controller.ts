@@ -29,6 +29,11 @@ export class OrderController {
     return this.orderService.getAll();
   }
 
+  @ApiOperation({ summary: 'Get order by id' })
+  @Get('by-id')
+  async getById(@Param('id') id: string) {
+    return this.orderService.getByUser(id);
+  }
   @ApiOperation({ summary: 'Get my order' })
   @ApiBearerAuth()
   @Get('my')

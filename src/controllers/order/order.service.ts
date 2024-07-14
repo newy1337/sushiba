@@ -32,6 +32,24 @@ export class OrderService {
     });
   }
 
+  async getById(id: string) {
+    return this.prisma.order.findMany({
+      where: {
+        id,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      include: {
+        items: {
+          include: {
+            product: {},
+          },
+        },
+      },
+    });
+  }
+
   async getByUser(userId: string) {
     return this.prisma.order.findMany({
       where: {
