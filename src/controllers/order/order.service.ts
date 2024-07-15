@@ -1,10 +1,16 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../../prisma.service';
 import * as process from 'node:process';
 import Stripe from 'stripe';
 import { OrderDto, UpdateOrderStatusDto } from './dtos/order.dto';
 import { PromocodeService } from '../promocode/promocode.service';
 import { sendSMS } from '../../utils/twilio';
+import { isAvailableOrderNow } from './validators/custom/validate_time';
 
 @Injectable()
 export class OrderService {
@@ -66,6 +72,9 @@ export class OrderService {
   }
 
   async makeOrder(dto: OrderDto, userId?: string) {
+    if (await isAvailableOrderNow(this.prisma, dto)) {
+      throw new HttpException('Not available time', HttpStatus.CONFLICT);
+    }
     if (!userId) {
       let user = await this.prisma.user.findUnique({
         where: {
@@ -85,7 +94,6 @@ export class OrderService {
     }
     const productIds = dto.items.map((item) => item.productId);
 
-    // Проверяем наличие всех productId в базе данных
     const products = await this.prisma.product.findMany({
       where: {
         id: {

@@ -85,5 +85,6 @@ export class UpdatePromoCodeDto {
   @IsOptional()
   @ApiProperty()
   @Min(0)
+  @Max(1500)
   activationLimit: number;
 }
