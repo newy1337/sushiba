@@ -10,7 +10,7 @@ import Stripe from 'stripe';
 import { OrderDto, UpdateOrderStatusDto } from './dtos/order.dto';
 import { PromocodeService } from '../promocode/promocode.service';
 import { sendSMS } from '../../utils/twilio';
-import { isAvailableOrderNow } from './validators/custom/validate_time';
+import { isAvailableOrderNow } from './validators/custom/validate.order';
 
 @Injectable()
 export class OrderService {

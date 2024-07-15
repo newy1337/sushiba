@@ -7,10 +7,12 @@ export const isAvailableOrderNow = async (
   dto: OrderDto,
 ) => {
   try {
-    const dayName = dto.details.preorderTime
+    const dayName = dto.details.preorder
       ? moment(dto.details.preorderTime).format('dddd')
       : moment().format('dddd');
-    const currentTime = moment();
+    const currentTime = dto.details.preorder
+      ? moment(dto.details.preorderTime)
+      : moment();
 
     const workingHours = await prisma.workingHours.findUnique({
       where: {
@@ -23,12 +25,12 @@ export const isAvailableOrderNow = async (
     }
 
     let isAvailable = false;
-    if (dto.details.deliveryMethod === 'delivery') {
+    if (dto.details.deliveryMethod === 'taxiDelivery') {
       const deliveryEndTime = moment(workingHours.deliveryEnd, 'HH:mm');
       const lastAvailableTime = deliveryEndTime.subtract(30, 'minutes');
 
       isAvailable = currentTime.isBefore(lastAvailableTime);
-    } else if (dto.details.deliveryMethod === 'takeaway') {
+    } else if (dto.details.deliveryMethod === 'takeAway') {
       const takeawayEndTime = moment(workingHours.takeawayEnd, 'HH:mm');
       const lastAvailableTime = takeawayEndTime.subtract(30, 'minutes');
 

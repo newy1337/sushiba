@@ -3,6 +3,7 @@ import {
   IsArray,
   IsBoolean,
   IsEmail,
+  IsIn,
   IsInt,
   IsNotEmpty,
   IsNumber,
@@ -73,6 +74,7 @@ export class OrderDetailsDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
+  @IsIn(['takeAway', 'taxiDelivery'])
   deliveryMethod: string;
 
   @ApiProperty()

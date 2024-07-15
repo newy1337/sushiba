@@ -38,13 +38,6 @@ export class UserService {
       await validateOTP(dto.phone, dto.otp);
     }
 
-    const userWithNewNumber = await this.prisma.user.findUnique({
-      where: { phone: dto.phone },
-    });
-
-    if (userWithNewNumber && userWithNewNumber.id != user.id) {
-      throw new HttpException('User with same number already registered', 400);
-    }
     delete dto.otp;
     return this.prisma.user.update({
       where: { id: user.id },
