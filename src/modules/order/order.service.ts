@@ -23,11 +23,10 @@ export class OrderService {
     this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
   }
 
-  async getAll(pageNumber: number = 1, pageSize: number = 10) {
-    const skip = (pageNumber - 1) * pageSize;
-    const take = Number(pageSize);
-
-    console.log(take);
+  async getAll(page: number = 1, pageSize: number = 10) {
+    const pageNumber = Number(page);
+    const pageSizeNumber = Number(pageSize);
+    const skip = (pageNumber - 1) * pageSizeNumber;
 
     const totalCount = await this.prisma.order.count();
     const orders = await this.prisma.order.findMany({
@@ -41,8 +40,8 @@ export class OrderService {
           },
         },
       },
-      skip: Number(skip),
-      take: Number(take),
+      skip: skip,
+      take: pageSizeNumber,
     });
     const totalPages = Math.ceil(totalCount / pageSize);
 
@@ -50,8 +49,8 @@ export class OrderService {
       pagination: {
         totalCount,
         totalPages,
+        pageSizeNumber,
         pageNumber,
-        pageSize,
       },
       orders,
     };
