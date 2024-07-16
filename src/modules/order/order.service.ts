@@ -27,7 +27,8 @@ export class OrderService {
     const skip = (pageNumber - 1) * pageSize;
     const take = pageSize;
 
-    return this.prisma.order.findMany({
+    const totalCount = await this.prisma.order.count();
+    const orders = await this.prisma.order.findMany({
       orderBy: {
         createdAt: 'desc',
       },
@@ -41,6 +42,15 @@ export class OrderService {
       skip,
       take,
     });
+    const totalPages = Math.ceil(totalCount / pageSize);
+
+    return {
+      totalCount,
+      totalPages,
+      pageNumber,
+      pageSize,
+      orders,
+    };
   }
 
   async getById(id: string) {
