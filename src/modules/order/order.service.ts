@@ -45,10 +45,12 @@ export class OrderService {
     const totalPages = Math.ceil(totalCount / pageSize);
 
     return {
-      totalCount,
-      totalPages,
-      pageNumber,
-      pageSize,
+      pagination: {
+        totalCount,
+        totalPages,
+        pageNumber,
+        pageSize,
+      },
       orders,
     };
   }
