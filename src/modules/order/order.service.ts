@@ -23,7 +23,10 @@ export class OrderService {
     this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
   }
 
-  async getAll() {
+  async getAll(pageNumber: number = 1, pageSize: number = 10) {
+    const skip = (pageNumber - 1) * pageSize;
+    const take = pageSize;
+
     return this.prisma.order.findMany({
       orderBy: {
         createdAt: 'desc',
@@ -35,6 +38,8 @@ export class OrderService {
           },
         },
       },
+      skip,
+      take,
     });
   }
 

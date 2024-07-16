@@ -7,6 +7,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Req,
   UsePipes,
   ValidationPipe,
@@ -29,8 +30,11 @@ export class OrderController {
   @Auth()
   @Roles(Role.ADMIN)
   @Get()
-  async getAll() {
-    return this.orderService.getAll();
+  async getAll(
+    @Query('page') page: number = 1,
+    @Query('pageSize') pageSize: number = 10,
+  ) {
+    return this.orderService.getAll(page, pageSize);
   }
 
   @ApiOperation({ summary: 'Get order by id' })
