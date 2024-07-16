@@ -25,7 +25,9 @@ export class OrderService {
 
   async getAll(pageNumber: number = 1, pageSize: number = 10) {
     const skip = (pageNumber - 1) * pageSize;
-    const take = pageSize;
+    const take = Number(pageSize);
+
+    console.log(take);
 
     const totalCount = await this.prisma.order.count();
     const orders = await this.prisma.order.findMany({
@@ -39,8 +41,8 @@ export class OrderService {
           },
         },
       },
-      skip,
-      take,
+      skip: Number(skip),
+      take: Number(take),
     });
     const totalPages = Math.ceil(totalCount / pageSize);
 
