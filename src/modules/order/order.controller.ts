@@ -27,6 +27,7 @@ export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
   @ApiOperation({ summary: 'Get all Orders' })
+  @ApiBearerAuth()
   @Auth()
   @Roles(Role.ADMIN)
   @Get()
