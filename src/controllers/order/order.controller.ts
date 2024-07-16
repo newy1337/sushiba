@@ -30,7 +30,7 @@ export class OrderController {
   }
 
   @ApiOperation({ summary: 'Get order by id' })
-  @Get('by-id')
+  @Get('by-id/:id')
   async getById(@Param('id') id: string) {
     return this.orderService.getById(id);
   }

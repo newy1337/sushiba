@@ -39,9 +39,9 @@ export class OrderService {
   }
 
   async getById(id: string) {
-    return this.prisma.order.findFirst({
+    return this.prisma.order.findUnique({
       where: {
-        id,
+        id: id,
       },
       include: {
         items: {
