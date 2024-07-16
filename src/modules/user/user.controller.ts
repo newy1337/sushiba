@@ -26,6 +26,7 @@ export class UserController {
   @ApiOperation({ summary: 'Get me' })
   @Get('me')
   async getMe(@CurrentUser() user: User) {
+    console.log(user);
     return this.userService.getMe(user);
   }
 

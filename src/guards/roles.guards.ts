@@ -5,11 +5,6 @@ import { ROLE_KEY } from 'src/decorators/roles.decorator';
 import { Role } from 'src/enums/roles.enum';
 import { AccessControlService } from '../shared/access-control.service';
 
-export class TokenDto {
-  id: number;
-  role: Role;
-}
-
 @Injectable()
 export class RolesGuard implements CanActivate {
   constructor(
@@ -26,12 +21,12 @@ export class RolesGuard implements CanActivate {
     ]);
 
     const request = context.switchToHttp().getRequest();
-    const token = request['token'] as TokenDto;
+    const user = request['user'];
 
     for (const role of requiredRoles) {
       const result = this.accessControlService.isAuthorized({
         requiredRole: role,
-        currentRole: token.role,
+        currentRole: user.role,
       });
 
       if (result) {
