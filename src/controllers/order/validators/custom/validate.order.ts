@@ -1,6 +1,6 @@
 import { PrismaService } from '../../../../prisma.service';
 import { OrderDto } from '../../dtos/order.dto';
-import moment from 'moment';
+import * as moment from 'moment';
 
 export const isAvailableOrderNow = async (
   prisma: PrismaService,
