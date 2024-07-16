@@ -10,7 +10,7 @@ export const isAvailableOrderNow = async (
     const dayName = dto.details.preorder
       ? moment(dto.details.preorderTime).format('dddd')
       : moment().format('dddd');
-    const currentTime = dto.details.preorder
+    const orderTime = dto.details.preorder
       ? moment(dto.details.preorderTime)
       : moment();
 
@@ -29,12 +29,12 @@ export const isAvailableOrderNow = async (
       const deliveryEndTime = moment(workingHours.deliveryEnd, 'HH:mm');
       const lastAvailableTime = deliveryEndTime.subtract(30, 'minutes');
 
-      isAvailable = currentTime.isBefore(lastAvailableTime);
+      isAvailable = orderTime.isBefore(lastAvailableTime);
     } else if (dto.details.deliveryMethod === 'takeAway') {
       const takeawayEndTime = moment(workingHours.takeawayEnd, 'HH:mm');
       const lastAvailableTime = takeawayEndTime.subtract(30, 'minutes');
 
-      isAvailable = currentTime.isBefore(lastAvailableTime);
+      isAvailable = orderTime.isAfter(lastAvailableTime);
     }
 
     return isAvailable;
