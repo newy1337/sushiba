@@ -41,7 +41,6 @@ export class AuthController {
   @ApiOperation({ summary: 'User Token Refresh' })
   @UsePipes(new ValidationPipe())
   @HttpCode(200)
-  @Auth()
   @ApiBearerAuth()
   @Post('token/refresh')
   async refresh(@Body() dto: RefreshTokenDto) {
@@ -51,7 +50,6 @@ export class AuthController {
   @ApiOperation({ summary: 'Complete Auth' })
   @UsePipes(new ValidationPipe())
   @HttpCode(200)
-  @Auth()
   @ApiBearerAuth()
   @Post('complete')
   async completeAuth(

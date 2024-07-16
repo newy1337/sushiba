@@ -14,7 +14,9 @@ import {
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ProductService } from './product.service';
 import { CreateProductDto, UpdateProductDto } from './dto/product.dto';
-import { Auth } from 'src/decorators/auth.decorator';
+import { Auth } from '../../decorators/auth.decorator';
+import { Roles } from '../../decorators/roles.decorator';
+import { Role } from '../../enums/roles.enum';
 
 @Controller('products')
 @ApiTags('Product')
@@ -46,8 +48,9 @@ export class ProductController {
     return this.productService.byCategory(categorySlug);
   }
 
-  @Auth()
   @ApiBearerAuth()
+  @Auth()
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: 'Create product' })
   @HttpCode(200)
   @Post()
@@ -59,8 +62,9 @@ export class ProductController {
     return this.productService.create(dto, image);
   }
 
-  @Auth()
   @ApiBearerAuth()
+  @Auth()
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: 'Update product' })
   @HttpCode(200)
   @Put(':id')
@@ -69,8 +73,9 @@ export class ProductController {
     return this.productService.update(id, dto);
   }
 
-  @Auth()
   @ApiBearerAuth()
+  @Auth()
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: 'Delete product' })
   @HttpCode(200)
   @Delete(':id')

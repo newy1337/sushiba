@@ -17,6 +17,8 @@ import { Auth } from '../../decorators/auth.decorator';
 import { CurrentUser } from '../../decorators/user.decorator';
 import { OrderDto, UpdateOrderStatusDto } from './dtos/order.dto';
 import RequestWithRawBody from '../../interfaces/requestWithRawBody.interface';
+import { Role } from '../../enums/roles.enum';
+import { Roles } from '../../decorators/roles.decorator';
 
 @ApiTags('Orders')
 @Controller('orders')
@@ -24,6 +26,8 @@ export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
   @ApiOperation({ summary: 'Get all Orders' })
+  @Auth()
+  @Roles(Role.ADMIN)
   @Get()
   async getAll() {
     return this.orderService.getAll();
@@ -37,13 +41,13 @@ export class OrderController {
   @ApiOperation({ summary: 'Get my order' })
   @ApiBearerAuth()
   @Get('my')
-  @Auth()
   async getByUser(@CurrentUser('id') userId: string) {
     return this.orderService.getByUser(userId);
   }
 
   @Auth({ optional: true })
   @ApiBearerAuth()
+  @Auth({ optional: true })
   @ApiOperation({ summary: 'Make order' })
   @HttpCode(200)
   @Post()
@@ -52,8 +56,9 @@ export class OrderController {
     return this.orderService.makeOrder(dto, userId);
   }
 
-  @Auth()
   @ApiBearerAuth()
+  @Auth()
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: 'Update Order Status' })
   @HttpCode(200)
   @Put('status/:id')

@@ -1,10 +1,10 @@
 import { ExecutionContext, Injectable, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { AuthGuard } from '../guards/auth.guard';
+import { RolesGuard } from '../guards/roles.guards';
 
 @Injectable()
-class OptionalAuthGuard extends AuthGuard('jwt') {
+class OptionalAuthGuard {
   handleRequest(err, user, info, context: ExecutionContext) {
-    // Если возникла ошибка или пользователь не найден, возвращаем undefined
     if (err || !user) {
       return undefined;
     }
@@ -14,5 +14,8 @@ class OptionalAuthGuard extends AuthGuard('jwt') {
 }
 
 export const Auth = (options?: { optional: boolean }) => {
-  return UseGuards(options?.optional ? OptionalAuthGuard : AuthGuard('jwt'));
+  return UseGuards(
+    options?.optional ? OptionalAuthGuard : AuthGuard,
+    RolesGuard,
+  );
 };

@@ -9,9 +9,11 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { SettingsService } from './settings.service';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateDayDto, UpdateDayHoursDto } from './dto/settings.dto';
 import { Auth } from '../../decorators/auth.decorator';
+import { Roles } from '../../decorators/roles.decorator';
+import { Role } from '../../enums/roles.enum';
 
 @Controller('settings')
 @ApiTags('Settings')
@@ -24,15 +26,20 @@ export class SettingsController {
     return this.settingsService.getWorkingHours();
   }
 
-  @ApiOperation({ summary: 'Update Working Hours by Day Id' })
-  @Post('days')
+  @ApiBearerAuth()
   @Auth()
+  @Roles(Role.ADMIN)
+  @ApiOperation({ summary: 'Create Working Hours' })
+  @Post('days')
   @HttpCode(200)
   @UsePipes(ValidationPipe)
   async createDay(dto: CreateDayDto) {
     return this.settingsService.createDay(dto);
   }
 
+  @ApiBearerAuth()
+  @Auth()
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: 'Update Working Hours by Day Id' })
   @Put('days/by-id/:id')
   @HttpCode(200)

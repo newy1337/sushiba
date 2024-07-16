@@ -1,19 +1,21 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AuthModule } from './controllers/auth/auth.module';
+import { AuthModule } from './modules/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
-import { CategoryModule } from './controllers/category/category.module';
-import { ProductModule } from './controllers/product/product.module';
-import { UserModule } from './controllers/user/user.module';
-import { OrderModule } from './controllers/order/order.module';
-import { SettingsModule } from './controllers/settings/settings.module';
-import { PromocodeModule } from './controllers/promocode/promocode.module';
+import { CategoryModule } from './modules/category/category.module';
+import { ProductModule } from './modules/product/product.module';
+import { UserModule } from './modules/user/user.module';
+import { OrderModule } from './modules/order/order.module';
+import { SettingsModule } from './modules/settings/settings.module';
+import { PromocodeModule } from './modules/promocode/promocode.module';
 import { AwsConfigService } from './utils/aws.config';
+import { SharedModule } from './shared/shared.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
+    SharedModule,
     AuthModule,
     CategoryModule,
     ProductModule,

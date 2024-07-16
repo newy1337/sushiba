@@ -12,31 +12,37 @@ import {
 } from '@nestjs/common';
 import { PromocodeService } from './promocode.service';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Auth } from '../../decorators/auth.decorator';
 import { CreatePromoCodeDto, UpdatePromoCodeDto } from './dto/promocode.dto';
 import { CurrentUser } from '../../decorators/user.decorator';
+import { Auth } from '../../decorators/auth.decorator';
+import { Roles } from '../../decorators/roles.decorator';
+import { Role } from '../../enums/roles.enum';
 
 @Controller('promocodes')
 @ApiTags('Promo codes')
 export class PromocodeController {
   constructor(private readonly promocodeService: PromocodeService) {}
 
+  @Auth()
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: 'Get all promo' })
   @Get()
   async getAll() {
     return this.promocodeService.getAll();
   }
 
+  @Auth()
+  @Roles(Role.USER, Role.ADMIN)
   @ApiOperation({ summary: 'Get my promo' })
   @Get('my')
-  @Auth()
   @ApiBearerAuth()
   async getMy(@CurrentUser('id') userId?: string) {
     return this.promocodeService.getMy(userId);
   }
 
-  @ApiOperation({ summary: 'Update  promo code' })
   @Auth()
+  @Roles(Role.ADMIN)
+  @ApiOperation({ summary: 'Update  promo code' })
   @ApiBearerAuth()
   @HttpCode(200)
   @Put(':id')
@@ -45,8 +51,9 @@ export class PromocodeController {
     return this.promocodeService.update(id, dto);
   }
 
-  @Auth()
   @ApiBearerAuth()
+  @Auth()
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: 'Create promo code' })
   @HttpCode(200)
   @Post()
@@ -55,9 +62,10 @@ export class PromocodeController {
     return this.promocodeService.create(dto);
   }
 
-  @ApiOperation({ summary: 'delete Promo code' })
-  @Auth()
   @ApiBearerAuth()
+  @Auth()
+  @Roles(Role.ADMIN)
+  @ApiOperation({ summary: 'delete Promo code' })
   @HttpCode(200)
   @Delete(':id')
   @UsePipes(ValidationPipe)

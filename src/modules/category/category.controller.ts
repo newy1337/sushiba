@@ -14,6 +14,8 @@ import { CategoryService } from './category.service';
 import { CreateCategoryDto, UpdateCategoryDto } from './dto/category.dto';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Auth } from '../../decorators/auth.decorator';
+import { Roles } from '../../decorators/roles.decorator';
+import { Role } from '../../enums/roles.enum';
 
 @Controller('category')
 @ApiTags('Category')
@@ -38,8 +40,9 @@ export class CategoryController {
     return this.categoryService.bySlug(slug);
   }
 
-  @Auth()
   @ApiBearerAuth()
+  @Auth()
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: 'Create category' })
   @HttpCode(200)
   @Post()
@@ -50,6 +53,7 @@ export class CategoryController {
 
   @ApiOperation({ summary: 'Update category' })
   @Auth()
+  @Roles(Role.ADMIN)
   @ApiBearerAuth()
   @HttpCode(200)
   @Put(':id')
@@ -60,6 +64,7 @@ export class CategoryController {
 
   @ApiOperation({ summary: 'Delete Category' })
   @Auth()
+  @Roles(Role.ADMIN)
   @ApiBearerAuth()
   @HttpCode(200)
   @Delete(':id')

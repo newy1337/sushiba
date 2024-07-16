@@ -7,7 +7,6 @@ import { PrismaService } from 'src/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import { CompleteAuthDto, sendOTPDto, verifyUserDto } from './dto/auth.dto';
 import { Twilio } from 'twilio';
-import { Auth } from '../../decorators/auth.decorator';
 
 @Injectable()
 export class AuthService {
@@ -55,11 +54,10 @@ export class AuthService {
       });
     }
 
-    const tokens = await this.generateToken(user.id);
+    const tokens = await this.generateToken(user.id, user.role);
     return { user, tokens, needCompleteRegister: true };
   }
 
-  @Auth()
   async completeAuth(dto: CompleteAuthDto, userId: string) {
     const user = await this.prisma.user.update({
       where: { id: userId },
@@ -77,12 +75,12 @@ export class AuthService {
     });
     console.log(user);
 
-    const tokens = await this.generateToken(result.id);
+    const tokens = await this.generateToken(result.id, result.role);
     return { user, tokens };
   }
 
-  private async generateToken(userId: string) {
-    const data = { id: userId };
+  private async generateToken(userId: string, role: string) {
+    const data = { id: userId, role };
     const accessToken = this.jwt.sign(data, { expiresIn: '10h' });
     const refreshToken = this.jwt.sign(data, { expiresIn: '168h' });
     return { accessToken, refreshToken };
