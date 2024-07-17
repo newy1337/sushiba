@@ -50,14 +50,15 @@ export class OrderController {
     return this.orderService.getByUser(userId);
   }
 
-  @Auth({ optional: true })
   @ApiBearerAuth()
   @Auth({ optional: true })
+  @Roles(Role.USER)
   @ApiOperation({ summary: 'Make order' })
   @HttpCode(200)
   @Post()
   @UsePipes(ValidationPipe)
   async create(@Body() dto: OrderDto, @CurrentUser('id') userId?: string) {
+    console.log(userId);
     return this.orderService.makeOrder(dto, userId);
   }
 

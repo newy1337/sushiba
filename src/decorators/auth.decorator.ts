@@ -9,13 +9,20 @@ class OptionalAuthGuard {
       return undefined;
     }
     // Иначе возвращаем пользователя
+    console.log(user);
     return user;
   }
 }
 
-export const Auth = (options?: { optional: boolean }) => {
-  return UseGuards(
-    options?.optional ? OptionalAuthGuard : AuthGuard,
-    RolesGuard,
-  );
+interface AuthOptions {
+  optional?: boolean;
+}
+
+export const Auth = (options?: AuthOptions) => {
+  console.log(2223);
+  if (options?.optional) {
+    return UseGuards(OptionalAuthGuard);
+  } else {
+    return UseGuards(AuthGuard, RolesGuard);
+  }
 };
