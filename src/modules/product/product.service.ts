@@ -103,7 +103,7 @@ export class ProductService {
     delete dataToUpdate.categoryId;
 
     if (imageFile) {
-      dto.image = await this.uploadS3(slugify(dto.name), imageFile);
+      dataToUpdate.image = await this.uploadS3(slugify(dto.name), imageFile);
     }
 
     return this.prisma.product.update({
