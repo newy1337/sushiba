@@ -74,8 +74,9 @@ export class ProductController {
   @UseInterceptors(FileInterceptor('image'))
   async update(
     @Param('id') id: string,
-    @Body() dto: UpdateProductDto,
-    @UploadedFile() imageFile: Express.Multer.File,
+    @Body('dto') dto: UpdateProductDto,
+    @UploadedFile()
+    imageFile: Express.Multer.File,
   ) {
     return this.productService.update(id, dto, imageFile);
   }
