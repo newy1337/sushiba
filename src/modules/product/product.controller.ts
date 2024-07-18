@@ -69,8 +69,12 @@ export class ProductController {
   @HttpCode(200)
   @Put(':id')
   @UsePipes(ValidationPipe)
-  async update(@Param('id') id: string, @Body() dto: UpdateProductDto) {
-    return this.productService.update(id, dto);
+  async update(
+    @Param('id') id: string,
+    @Body() dto: UpdateProductDto,
+    @UploadedFile() image: Express.Multer.File,
+  ) {
+    return this.productService.update(id, dto, image);
   }
 
   @ApiBearerAuth()

@@ -74,7 +74,11 @@ export class ProductService {
     });
   }
 
-  async update(id: string, dto: UpdateProductDto) {
+  async update(
+    id: string,
+    dto: UpdateProductDto,
+    imageFile?: Express.Multer.File,
+  ) {
     if (dto.name) {
       const slug = slugify(dto.name);
 
@@ -83,15 +87,18 @@ export class ProductService {
       await this.checkCategoryExist(dto.categoryId);
     }
 
-    let dataToUpdate: any = {};
+    let dataToUpdate: any = { ...dto };
 
     if (dto.categoryId) {
       dataToUpdate.category = { connect: { id: dto.categoryId } };
-
-      delete dataToUpdate.categoryId;
     }
 
     dataToUpdate = { ...dataToUpdate, ...dto };
+    delete dataToUpdate.categoryId;
+
+    if (imageFile) {
+      dto.image = await this.uploadS3(slugify(dto.name), imageFile);
+    }
 
     return this.prisma.product.update({
       where: { id },
