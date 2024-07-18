@@ -8,6 +8,7 @@ import {
   Post,
   Put,
   UploadedFile,
+  UseInterceptors,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -17,6 +18,7 @@ import { CreateProductDto, UpdateProductDto } from './dto/product.dto';
 import { Auth } from '../../decorators/auth.decorator';
 import { Roles } from '../../decorators/roles.decorator';
 import { Role } from '../../enums/roles.enum';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('products')
 @ApiTags('Product')
@@ -69,6 +71,7 @@ export class ProductController {
   @HttpCode(200)
   @Put(':id')
   @UsePipes(ValidationPipe)
+  @UseInterceptors(FileInterceptor('image'))
   async update(
     @Param('id') id: string,
     @Body() dto: UpdateProductDto,
