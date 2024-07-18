@@ -79,6 +79,12 @@ export class ProductService {
     dto: UpdateProductDto,
     imageFile?: Express.Multer.File,
   ) {
+    const existingProduct = await this.prisma.product.findUnique({
+      where: { id },
+    });
+    if (!existingProduct) {
+      throw new Error(`Product with id ${id} not found.`);
+    }
     if (dto.name) {
       const slug = slugify(dto.name);
 
