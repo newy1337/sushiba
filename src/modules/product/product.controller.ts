@@ -78,6 +78,7 @@ export class ProductController {
     @UploadedFile()
     imageFile: Express.Multer.File,
   ) {
+    console.log(dto);
     return this.productService.update(id, dto, imageFile);
   }
 
