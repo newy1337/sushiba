@@ -72,9 +72,9 @@ export class ProductController {
   async update(
     @Param('id') id: string,
     @Body() dto: UpdateProductDto,
-    @UploadedFile() image: Express.Multer.File,
+    @UploadedFile() imageFile: Express.Multer.File,
   ) {
-    return this.productService.update(id, dto, image);
+    return this.productService.update(id, dto, imageFile);
   }
 
   @ApiBearerAuth()
