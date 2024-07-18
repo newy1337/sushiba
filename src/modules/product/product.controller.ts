@@ -74,12 +74,12 @@ export class ProductController {
   @UseInterceptors(FileInterceptor('image'))
   async update(
     @Param('id') id: string,
-    @Body('dto') dto: UpdateProductDto,
+    @Body('dto') dto: string,
     @UploadedFile()
     imageFile: Express.Multer.File,
   ) {
-    console.log(dto);
-    return this.productService.update(id, dto, imageFile);
+    const parsedDto: UpdateProductDto = JSON.parse(dto);
+    return this.productService.update(id, parsedDto, imageFile);
   }
 
   @ApiBearerAuth()
