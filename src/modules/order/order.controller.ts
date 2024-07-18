@@ -45,6 +45,8 @@ export class OrderController {
   }
   @ApiOperation({ summary: 'Get my order' })
   @ApiBearerAuth()
+  @Auth()
+  @Roles(Role.USER)
   @Get('my')
   async getByUser(@CurrentUser('id') userId: string) {
     return this.orderService.getByUser(userId);

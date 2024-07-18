@@ -72,6 +72,7 @@ export class OrderService {
   }
 
   async getByUser(userId: string) {
+    console.log(userId);
     return this.prisma.order.findMany({
       where: {
         userId: userId,
