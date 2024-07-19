@@ -11,6 +11,7 @@ import { SettingsModule } from './modules/settings/settings.module';
 import { PromocodeModule } from './modules/promocode/promocode.module';
 import { AwsConfigService } from './utils/aws.config';
 import { SharedModule } from './shared/shared.module';
+import { TicketsModule } from './modules/tickets/tickets.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { SharedModule } from './shared/shared.module';
     OrderModule,
     SettingsModule,
     PromocodeModule,
+    TicketsModule,
   ],
   controllers: [AppController],
   providers: [AppService, AwsConfigService],
