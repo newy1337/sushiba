@@ -57,11 +57,14 @@ export class ProductController {
   @HttpCode(200)
   @Post()
   @UsePipes(ValidationPipe)
+  @UseInterceptors(FileInterceptor('image'))
   async create(
-    @Body() dto: CreateProductDto,
-    @UploadedFile() image: Express.Multer.File,
+    @Body('dto') dto: string,
+    @UploadedFile()
+    imageFile: Express.Multer.File,
   ) {
-    return this.productService.create(dto, image);
+    const parsedDto: CreateProductDto = JSON.parse(dto);
+    return this.productService.create(parsedDto, imageFile);
   }
 
   @ApiBearerAuth()

@@ -80,13 +80,12 @@ export class ProductService {
     }));
   }
 
-  async create(dto: CreateProductDto, imageFile: Express.Multer.File) {
+  async create(dto: CreateProductDto, imageFile?: Express.Multer.File) {
     const slug = slugify(dto.name);
 
     await this.checkSlugExist(slug);
     await this.checkCategoryExist(dto.categoryId);
     const url = await this.uploadS3(slug, imageFile);
-
     return this.prisma.product.create({
       data: {
         image: url,
@@ -110,7 +109,6 @@ export class ProductService {
     if (dto.name) {
       const slug = slugify(dto.name);
 
-      console.log(slug);
       await this.checkSlugExist(slug);
       await this.checkCategoryExist(dto.categoryId);
     }
