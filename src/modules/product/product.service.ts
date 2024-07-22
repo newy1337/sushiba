@@ -85,10 +85,11 @@ export class ProductService {
 
     await this.checkSlugExist(slug);
     await this.checkCategoryExist(dto.categoryId);
-    const url = await this.uploadS3(slug, imageFile);
+    if (imageFile) {
+      dto.image = await this.uploadS3(slugify(dto.name), imageFile);
+    }
     return this.prisma.product.create({
       data: {
-        image: url,
         ...dto,
         slug: slugify(dto.name),
       },
