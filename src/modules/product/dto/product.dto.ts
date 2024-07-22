@@ -11,8 +11,6 @@ import {
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateProductDto {
-  @ApiProperty({ type: 'string', format: 'binary' })
-  image: any;
   @IsString()
   @ApiProperty()
   description: string;

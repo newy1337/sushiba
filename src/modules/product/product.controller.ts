@@ -63,6 +63,7 @@ export class ProductController {
     @UploadedFile()
     imageFile: Express.Multer.File,
   ) {
+    console.log(dto);
     const parsedDto: CreateProductDto = JSON.parse(dto);
     return this.productService.create(parsedDto, imageFile);
   }
