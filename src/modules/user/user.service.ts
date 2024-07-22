@@ -17,16 +17,17 @@ export class UserService {
   }
 
   async updateMe(dto: UpdateUserDto, user: User) {
-    if (dto.otp === undefined) {
+    if (dto.phone && user.phone !== dto.phone && dto.otp === undefined) {
       await sendOTP(dto.phone);
       return { needOTP: true };
     }
-    if (user.phone != dto.phone) {
+
+    if (dto.phone && user.phone !== dto.phone) {
       const userWithNewNumber = await this.prisma.user.findUnique({
         where: { phone: dto.phone },
       });
 
-      if (userWithNewNumber && userWithNewNumber.id != user.id) {
+      if (userWithNewNumber && userWithNewNumber.id !== user.id) {
         throw new HttpException(
           'User with same number already registered',
           400,
@@ -39,6 +40,7 @@ export class UserService {
     }
 
     delete dto.otp;
+
     return this.prisma.user.update({
       where: { id: user.id },
       data: dto,

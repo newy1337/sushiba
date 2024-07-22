@@ -9,6 +9,7 @@ export class UpdateUserDto {
   @IsEmail()
   email: string;
   @ApiProperty()
+  @IsOptional()
   @IsPhoneNumber()
   phone: string;
   @ApiPropertyOptional()
