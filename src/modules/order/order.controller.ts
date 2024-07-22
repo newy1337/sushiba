@@ -42,7 +42,7 @@ export class OrderController {
   @ApiBearerAuth()
   @Auth()
   @Roles(Role.ADMIN)
-  @Get()
+  @Get('active')
   async getActiveOrder() {
     return this.orderService.getActive();
   }
