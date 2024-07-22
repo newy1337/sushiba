@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -10,6 +11,7 @@ import {
   UploadedFile,
   UseInterceptors,
   UsePipes,
+  ValidationError,
   ValidationPipe,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -19,6 +21,8 @@ import { Auth } from '../../decorators/auth.decorator';
 import { Roles } from '../../decorators/roles.decorator';
 import { Role } from '../../enums/roles.enum';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { plainToInstance } from 'class-transformer';
+import { validate } from 'class-validator';
 
 @Controller('products')
 @ApiTags('Product')
@@ -65,6 +69,16 @@ export class ProductController {
   ) {
     console.log(dto);
     const parsedDto: CreateProductDto = JSON.parse(dto);
+
+    const dtoInstance = plainToInstance(CreateProductDto, parsedDto);
+
+    // Выполняем валидацию
+    const errors = await validate(dtoInstance);
+    if (errors.length > 0) {
+      console.error('Validation errors:', errors);
+      throw new BadRequestException(getAllConstraints(errors));
+    }
+
     return this.productService.create(parsedDto, imageFile);
   }
 
@@ -83,6 +97,14 @@ export class ProductController {
     imageFile: Express.Multer.File,
   ) {
     const parsedDto: UpdateProductDto = JSON.parse(dto);
+
+    const dtoInstance = plainToInstance(UpdateProductDto, parsedDto);
+
+    const errors = await validate(dtoInstance);
+    if (errors.length > 0) {
+      console.error('Validation errors:', errors);
+      throw new BadRequestException(getAllConstraints(errors));
+    }
     return this.productService.update(id, parsedDto, imageFile);
   }
 
@@ -96,4 +118,22 @@ export class ProductController {
   async delete(@Param('id') id: string) {
     return this.productService.delete(id);
   }
+}
+
+function getAllConstraints(errors: ValidationError[]): string[] {
+  const constraints: string[] = [];
+
+  for (const error of errors) {
+    if (error.constraints) {
+      const constraintValues = Object.values(error.constraints);
+      constraints.push(...constraintValues);
+    }
+
+    if (error.children) {
+      const childConstraints = getAllConstraints(error.children);
+      constraints.push(...childConstraints);
+    }
+  }
+
+  return constraints;
 }
