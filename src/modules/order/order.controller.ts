@@ -38,6 +38,15 @@ export class OrderController {
     return this.orderService.getAll(page, pageSize);
   }
 
+  @ApiOperation({ summary: 'Get active orders' })
+  @ApiBearerAuth()
+  @Auth()
+  @Roles(Role.ADMIN)
+  @Get()
+  async getActiveOrder() {
+    return this.orderService.getActive();
+  }
+
   @ApiOperation({ summary: 'Get order by id' })
   @Get('by-id')
   async getById(@Param('id') id: string) {

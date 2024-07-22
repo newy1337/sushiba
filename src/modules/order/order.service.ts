@@ -56,6 +56,25 @@ export class OrderService {
     };
   }
 
+  async getActive() {
+    return this.prisma.order.findMany({
+      where: {
+        status: {
+          name: {
+            not: 'Done',
+          },
+        },
+      },
+      include: {
+        items: {
+          include: {
+            product: {},
+          },
+        },
+      },
+    });
+  }
+
   async getById(id: string) {
     return this.prisma.order.findFirst({
       where: {

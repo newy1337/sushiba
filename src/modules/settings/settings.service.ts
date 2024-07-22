@@ -36,4 +36,10 @@ export class SettingsService {
 
     return { message: 'Working time is updated', day: updatedDay };
   }
+
+  async orderStatuses() {
+    return this.prisma.orderStatuses.findMany({
+      select: { id: true, name: true },
+    });
+  }
 }

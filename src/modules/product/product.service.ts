@@ -88,10 +88,17 @@ export class ProductService {
     if (imageFile) {
       dto.image = await this.uploadS3(slugify(dto.name), imageFile);
     }
+
+    const { categoryId, extras, ...productData } = dto;
+    const formattedExtras = extras ? JSON.stringify(extras) : null;
     return this.prisma.product.create({
       data: {
-        ...dto,
+        ...productData,
         slug: slugify(dto.name),
+        category: {
+          connect: { id: categoryId },
+        },
+        extras: formattedExtras,
       },
     });
   }

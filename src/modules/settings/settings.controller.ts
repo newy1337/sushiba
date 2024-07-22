@@ -44,7 +44,18 @@ export class SettingsController {
   @Put('days/by-id/:id')
   @HttpCode(200)
   @UsePipes(ValidationPipe)
-  async getById(@Param('id') id: string, dto: UpdateDayHoursDto) {
+  async getDayById(@Param('id') id: string, dto: UpdateDayHoursDto) {
     return this.settingsService.updateDayHours(id, dto);
+  }
+
+  @ApiBearerAuth()
+  @Auth()
+  @Roles(Role.ADMIN)
+  @ApiOperation({ summary: 'Order Statuses' })
+  @Get('order/statuses')
+  @HttpCode(200)
+  @UsePipes(ValidationPipe)
+  async getOrderStatuses() {
+    return this.settingsService.orderStatuses();
   }
 }
