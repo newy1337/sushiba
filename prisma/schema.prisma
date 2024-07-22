@@ -40,10 +40,9 @@ model User {
 
 model Product {
   id          String      @id @default(cuid())
-  image       String
+  image       String?
   name        String
   slug        String      @unique
-  description String
   active      Boolean
   price       Float
   servingSize Int
