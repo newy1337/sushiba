@@ -50,6 +50,7 @@ model Product {
   discount    Int         @default(0)
   filling     Json
   allergens   Json
+  extras      Json?
   categoryId  String      @map("category_id")
   category    Category    @relation(fields: [categoryId], references: [id])
   createdAt   DateTime    @default(now()) @map("created_at")

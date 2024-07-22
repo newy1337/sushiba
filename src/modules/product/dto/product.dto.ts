@@ -1,6 +1,7 @@
 import {
   IsArray,
   IsBoolean,
+  IsIn,
   IsInt,
   IsNumber,
   IsOptional,
@@ -49,6 +50,10 @@ export class CreateProductDto {
   @IsArray()
   @ApiProperty()
   allergens: [];
+
+  @IsOptional()
+  @ApiPropertyOptional()
+  extras: ExtrasDto[];
 
   @IsString()
   @ApiProperty()
@@ -106,7 +111,23 @@ export class UpdateProductDto {
   @IsArray()
   @ApiPropertyOptional()
   @IsOptional()
+  extras: ExtrasDto[];
+
+  @IsArray()
+  @ApiPropertyOptional()
+  @IsOptional()
   allergens: [];
 
   categoryId: string;
+}
+
+export class ExtrasDto {
+  @ApiProperty()
+  @IsString()
+  @IsIn(['ginger', 'wasabi', 'soySouce'])
+  name: string;
+
+  @ApiProperty()
+  @IsString()
+  count: number;
 }
