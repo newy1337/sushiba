@@ -17,10 +17,6 @@ export class CreateProductDto {
 
   @IsString()
   @ApiProperty()
-  description: string;
-
-  @IsString()
-  @ApiProperty()
   name: string;
 
   @IsBoolean()
