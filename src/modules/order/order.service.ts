@@ -61,7 +61,7 @@ export class OrderService {
       where: {
         status: {
           name: {
-            not: 'Done',
+            not: 'Completed',
           },
         },
       },
