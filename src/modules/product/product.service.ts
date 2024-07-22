@@ -22,40 +22,62 @@ export class ProductService {
   ) {}
 
   async getAll() {
-    return this.prisma.product.findMany({
+    // Используем await для получения данных
+    const products = await this.prisma.product.findMany({
       include: {
         category: true,
       },
     });
+
+    if (products.length === 0) throw new NotFoundException('Products is empty');
+
+    return products.map((product) => ({
+      ...product,
+      priceWithDiscount: product.price - product.discount,
+    }));
   }
 
   async byId(id: string) {
-    const products = await this.prisma.product.findUnique({
+    const product = await this.prisma.product.findUnique({
       where: { id: id },
       // select: returnProductObject,
     });
 
-    if (!products) throw new NotFoundException('Product not found');
-    return products;
+    if (!product) throw new NotFoundException('Product not found');
+    const priceWithDiscount = product.price - product.discount;
+
+    return {
+      ...product,
+      priceWithDiscount,
+    };
   }
   async bySlug(slug: string) {
-    const products = await this.prisma.product.findUnique({
+    const product = await this.prisma.product.findUnique({
       where: { slug: slug },
       // select: returnProductObject,
     });
 
-    if (!products) throw new NotFoundException('Products not found');
-    return products;
+    if (!product) throw new NotFoundException('Products not found');
+    const priceWithDiscount = product.price - product.discount;
+
+    return {
+      ...product,
+      priceWithDiscount,
+    };
   }
 
   async byCategory(categorySlug: string) {
     const products = await this.prisma.product.findMany({
       where: { category: { slug: categorySlug } },
-      // select: returnProductObject,
     });
 
-    if (!products) throw new NotFoundException('Products not found');
-    return products;
+    if (products.length === 0)
+      throw new NotFoundException('Products not found');
+
+    return products.map((product) => ({
+      ...product,
+      priceWithDiscount: product.price - product.discount,
+    }));
   }
 
   async create(dto: CreateProductDto, imageFile: Express.Multer.File) {
