@@ -61,7 +61,7 @@ export class OrderService {
       where: {
         status: {
           name: {
-            not: 'Completed',
+            notIn: ['Waiting for payment', 'Completed'],
           },
         },
       },
@@ -232,14 +232,17 @@ export class OrderService {
         status: true,
       },
     });
-    console.log(orderUpdated);
-    await sendSMS(
-      orderUpdated.user.phone,
-      'You order: ' +
-        orderUpdated.shortId +
-        ' changed status to: ' +
-        orderUpdated.status.name,
-    );
+    try {
+      await sendSMS(
+        orderUpdated.user.phone,
+        'You order: ' +
+          orderUpdated.shortId +
+          ' changed status to: ' +
+          orderUpdated.status.name,
+      );
+    } catch (e) {
+      console.error(e);
+    }
     return { message: 'Order statuses updated' };
   }
 
