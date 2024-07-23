@@ -114,7 +114,7 @@ export class ProductService {
     if (!existingProduct) {
       throw new Error(`Product with id ${id} not found.`);
     }
-    if (dto.name) {
+    if (dto.name !== existingProduct.name) {
       const slug = slugify(dto.name);
 
       await this.checkSlugExist(slug);
