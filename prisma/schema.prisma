@@ -62,6 +62,7 @@ model Product {
 
 model Category {
   id        String    @id @default(cuid())
+  index     Int?
   name      String
   slug      String    @unique
   products  Product[]

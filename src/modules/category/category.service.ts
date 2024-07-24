@@ -19,6 +19,11 @@ export class CategoryService {
   async getAll() {
     return this.prisma.category.findMany({
       select: returnCategoryObject,
+      orderBy: [
+        {
+          index: 'asc',
+        },
+      ],
     });
   }
 
@@ -44,7 +49,7 @@ export class CategoryService {
   async create(dto: CreateCategoryDto) {
     return this.prisma.category.create({
       data: {
-        name: dto.name,
+        ...dto,
         slug: slugify(dto.name),
       },
     });
@@ -53,12 +58,18 @@ export class CategoryService {
   async update(id: string, dto: UpdateCategoryDto) {
     console.log(id);
 
+    const category = this.prisma.category.findUnique({
+      where: { id: id },
+    });
+
+    if (!category) throw new NotFoundException('Category not found');
+
     return this.prisma.category.update({
       where: {
         id,
       },
       data: {
-        name: dto.name,
+        ...dto,
         slug: slugify(dto.name),
       },
     });

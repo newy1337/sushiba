@@ -148,9 +148,7 @@ export class ProductService {
         },
       });
     } catch (e) {
-      throw new BadRequestException(
-        'Category have products, delete product and try again',
-      );
+      throw new BadRequestException('Failed to delete product try again later');
     }
   }
 
