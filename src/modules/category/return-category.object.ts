@@ -4,4 +4,5 @@ export const returnCategoryObject: Prisma.CategorySelect = {
   id: true,
   name: true,
   slug: true,
+  index: true,
 };
