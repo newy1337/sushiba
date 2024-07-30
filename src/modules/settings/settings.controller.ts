@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Get,
   HttpCode,
@@ -33,7 +34,8 @@ export class SettingsController {
   @Post('days')
   @HttpCode(200)
   @UsePipes(ValidationPipe)
-  async createDay(dto: CreateDayDto) {
+  async createDay(@Body() dto: CreateDayDto) {
+    console.log(dto);
     return this.settingsService.createDay(dto);
   }
 
@@ -44,7 +46,8 @@ export class SettingsController {
   @Put('days/by-id/:id')
   @HttpCode(200)
   @UsePipes(ValidationPipe)
-  async getDayById(@Param('id') id: string, dto: UpdateDayHoursDto) {
+  async getDayById(@Param('id') id: string, @Body() dto: UpdateDayHoursDto) {
+    console.log(dto);
     return this.settingsService.updateDayHours(id, dto);
   }
 

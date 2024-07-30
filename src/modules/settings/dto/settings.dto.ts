@@ -1,10 +1,5 @@
 import { IsString, Matches } from 'class-validator';
-import {
-  ApiProperty,
-  ApiPropertyOptional,
-  OmitType,
-  PartialType,
-} from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateDayDto {
   @IsString()
@@ -25,23 +20,44 @@ export class CreateDayDto {
     message: 'deliveryEnd must be in HH:mm format',
   })
   @ApiPropertyOptional()
-  deliveryEnd?: string;
+  deliveryEnd: string;
 
   @IsString()
   @Matches(/^([01]\d|2[0-3]):([0-5]\d)$/, {
     message: 'takeawayStart must be in HH:mm format',
   })
   @ApiPropertyOptional()
-  takeawayStart?: string;
+  takeawayStart: string;
 
   @IsString()
   @Matches(/^([01]\d|2[0-3]):([0-5]\d)$/, {
     message: 'takeawayEnd must be in HH:mm format',
   })
   @ApiPropertyOptional()
-  takeawayEnd?: string;
+  takeawayEnd: string;
 }
+export class UpdateDayHoursDto {
+  @IsString()
+  @Matches(/^([01]\d|2[0-3]):([0-5]\d)$/, {
+    message: 'deliveryStart must be in HH:mm format',
+  })
+  deliveryStart: string;
 
-export class UpdateDayHoursDto extends PartialType(
-  OmitType(CreateDayDto, ['day', 'id'] as const),
-) {}
+  @IsString()
+  @Matches(/^([01]\d|2[0-3]):([0-5]\d)$/, {
+    message: 'deliveryEnd must be in HH:mm format',
+  })
+  deliveryEnd: string;
+
+  @IsString()
+  @Matches(/^([01]\d|2[0-3]):([0-5]\d)$/, {
+    message: 'takeawayStart must be in HH:mm format',
+  })
+  takeawayStart: string;
+
+  @IsString()
+  @Matches(/^([01]\d|2[0-3]):([0-5]\d)$/, {
+    message: 'takeawayEnd must be in HH:mm format',
+  })
+  takeawayEnd: string;
+}

@@ -27,6 +27,8 @@ export class SettingsService {
       throw new NotFoundException(`WorkingHours  with id ${id} not found`);
     }
 
+    console.log(dto);
+
     const updatedDay = await this.prisma.workingHours.update({
       where: {
         id,
