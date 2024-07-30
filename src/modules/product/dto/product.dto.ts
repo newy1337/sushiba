@@ -119,6 +119,16 @@ export class UpdateProductDto {
   allergens: [];
 
   categoryId: string;
+
+  @IsOptional()
+  @ApiPropertyOptional()
+  @IsBoolean()
+  IsSpicy: boolean;
+
+  @IsOptional()
+  @ApiPropertyOptional()
+  @IsBoolean()
+  IsVegan: boolean;
 }
 
 export class ExtrasDto {

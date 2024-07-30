@@ -49,6 +49,8 @@ model Product {
   weight      Int
   discount    Int         @default(0)
   filling     Json
+  isSpicy     Boolean?    @default(false) @map("is_spicy")
+  isVegan     Boolean?    @default(false) @map("is_vegan")
   allergens   Json
   extras      Json?
   categoryId  String      @map("category_id")
