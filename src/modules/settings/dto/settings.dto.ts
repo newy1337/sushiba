@@ -43,5 +43,5 @@ export class CreateDayDto {
 }
 
 export class UpdateDayHoursDto extends PartialType(
-  OmitType(CreateDayDto, ['day'] as const),
+  OmitType(CreateDayDto, ['day', 'id'] as const),
 ) {}
