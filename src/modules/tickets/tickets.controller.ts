@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Get,
   HttpCode,
@@ -33,7 +34,7 @@ export class TicketsController {
   @Post('create')
   @HttpCode(200)
   @UsePipes(ValidationPipe)
-  async createTicket(dto: CreateTicketDto) {
+  async createTicket(@Body() dto: CreateTicketDto) {
     return this.ticketsService.create(dto);
   }
 
