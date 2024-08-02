@@ -199,8 +199,8 @@ export class OrderService {
         // payment_intent_data: {
         //   setup_future_usage: 'on_session',
         // },
-        success_url: 'http://127.0.0.1:3000/pt/myOrders?order=' + order.id,
-        cancel_url: 'http://127.0.0.1:3000/pt/cart',
+        success_url: 'https://sushiba.eu/pt/myOrders?order=' + order.id,
+        cancel_url: 'https://sushiba.eu/pt/cart',
       });
       return { sessionId: session.id };
     } catch (error) {
