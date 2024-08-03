@@ -14,7 +14,7 @@ export const sendSMS = async (phone: string, text: string) => {
     const message = await client.messages.create({
       body: text,
       to: phone,
-      from: '12059536964',
+      from: '+351923241570',
     });
     console.log(`SMS успешно отправлено с SID: ${message.sid}`);
     return message;

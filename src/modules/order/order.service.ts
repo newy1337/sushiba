@@ -210,6 +210,10 @@ export class OrderService {
   }
 
   async updateStatus(dto: UpdateOrderStatusDto, orderId: string) {
+    interface OrderDetails {
+      deliveryMethod?: string;
+      // Add other properties as needed
+    }
     const order = await this.prisma.order.findFirst({
       where: {
         id: orderId,
@@ -233,13 +237,15 @@ export class OrderService {
       },
     });
     try {
-      await sendSMS(
-        orderUpdated.user.phone,
-        'You order: ' +
-          orderUpdated.shortId +
-          ' changed status to: ' +
-          orderUpdated.status.name,
-      );
+      let message = '';
+
+      const details = order.details as OrderDetails;
+      if (orderUpdated.status.name === 'Preparing') {
+        message = `Hey there!\n\nSushiba is here, thank you for your order (#${orderUpdated.shortId}).\n\nWe are working our magic to get everything ready, and your order will be ready to go as soon as possible.\nCheck your order status here: https://sushiba.eu/pt/myOrders?order=${order.id}`;
+      } else if (details.deliveryMethod === 'takeAway') {
+        message = `Your order is ready and everything looks absolutely delicious!\n\nYou can pick it up in our cafe.\n\nOur address: Rua Artilharia 1, 98A, Sushiba.`;
+      }
+      await sendSMS(orderUpdated.user.phone, message);
     } catch (e) {
       console.error(e);
     }
@@ -286,11 +292,6 @@ export class OrderService {
         user: true,
       },
     });
-
-    await sendSMS(
-      order.user.phone,
-      'You order: ' + order.shortId + ' created!',
-    );
 
     console.log(`Order ${orderId} has been updated to 'paid'.`);
     return { message: 'Order statuses updated' };
