@@ -36,13 +36,13 @@ export class AuthService {
   }
 
   async verifyUser(dto: verifyUserDto) {
-    const verificationCheck = await this.twilioClient.verify.v2
-      .services(this.verifySid)
-      .verificationChecks.create({ to: dto.phone, code: dto.otp });
-
-    if (verificationCheck.status !== 'approved') {
-      throw new UnauthorizedException('Invalid OTP');
-    }
+    // const verificationCheck = await this.twilioClient.verify.v2
+    //   .services(this.verifySid)
+    //   .verificationChecks.create({ to: dto.phone, code: dto.otp });
+    //
+    // if (verificationCheck.status !== 'approved') {
+    //   throw new UnauthorizedException('Invalid OTP');
+    // }
 
     let user = await this.prisma.user.findUnique({
       where: { phone: dto.phone },

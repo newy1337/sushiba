@@ -11,6 +11,9 @@ generator client {
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
+  config = {
+  timezone = "Europe/Lisbon"
+}
 }
 
 enum Role {
@@ -148,7 +151,7 @@ model OrderStatuses {
 
 model Tickets {
   id        String       @id @default(cuid())
-  name      String       @unique
+  name      String
   phone     String
   email     String?
   message   String

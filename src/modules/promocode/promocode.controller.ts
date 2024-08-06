@@ -26,6 +26,7 @@ export class PromocodeController {
   @Auth()
   @Roles(Role.ADMIN)
   @ApiOperation({ summary: 'Get all promo' })
+  @ApiBearerAuth()
   @Get()
   async getAll() {
     return this.promocodeService.getAll();

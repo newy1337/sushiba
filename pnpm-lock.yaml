@@ -59,6 +59,9 @@ dependencies:
   moment:
     specifier: ^2.30.1
     version: 2.30.1
+  moment-timezone:
+    specifier: ^0.5.45
+    version: 0.5.45
   multer:
     specifier: 1.4.5-lts.1
     version: 1.4.5-lts.1
@@ -6257,6 +6260,12 @@ packages:
     resolution: {integrity: sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==}
     engines: {node: '>=10'}
     hasBin: true
+    dev: false
+
+  /moment-timezone@0.5.45:
+    resolution: {integrity: sha512-HIWmqA86KcmCAhnMAN0wuDOARV/525R2+lOLotuGFzn4HO+FH+/645z2wx0Dt3iDv6/p61SIvKnDstISainhLQ==}
+    dependencies:
+      moment: 2.30.1
     dev: false
 
   /moment@2.30.1:

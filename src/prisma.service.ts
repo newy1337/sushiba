@@ -5,5 +5,7 @@ import { PrismaClient } from '@prisma/client';
 export class PrismaService extends PrismaClient implements OnModuleInit {
   async onModuleInit() {
     await this.$connect();
+    // Установить временную зону для текущей сессии
+    await this.$executeRaw`SET time_zone = 'Europe/Lisbon';`;
   }
 }
