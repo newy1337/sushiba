@@ -16,6 +16,8 @@ export const isAvailableOrderNow = async (
       ? moment(dto.details.preorderTime).tz(portugalTimezone)
       : moment().tz(portugalTimezone);
 
+    console.log(orderTime);
+
     const workingHours = await prisma.workingHours.findUnique({
       where: {
         day: dayName,
@@ -28,21 +30,27 @@ export const isAvailableOrderNow = async (
 
     let isAvailable = false;
     if (dto.details.deliveryMethod === 'taxiDelivery') {
+      const deliveryStartTime = moment(workingHours.deliveryStart, 'HH:mm').tz(
+        portugalTimezone,
+      );
       const deliveryEndTime = moment(workingHours.deliveryEnd, 'HH:mm').tz(
         portugalTimezone,
       );
-      console.log(deliveryEndTime);
       const lastAvailableTime = deliveryEndTime.subtract(30, 'minutes');
 
-      console.log(orderTime, lastAvailableTime);
-      isAvailable = orderTime.isBefore(lastAvailableTime);
+      console.log(deliveryStartTime, deliveryEndTime);
+      isAvailable = orderTime.isBetween(deliveryStartTime, lastAvailableTime);
     } else if (dto.details.deliveryMethod === 'takeAway') {
+      const takeawayStartTime = moment(workingHours.takeawayStart, 'HH:mm').tz(
+        portugalTimezone,
+      );
       const takeawayEndTime = moment(workingHours.takeawayEnd, 'HH:mm').tz(
         portugalTimezone,
       );
       const lastAvailableTime = takeawayEndTime.subtract(30, 'minutes');
 
-      isAvailable = orderTime.isBefore(lastAvailableTime); // Изменено на isBefore
+      console.log(takeawayStartTime, takeawayEndTime);
+      isAvailable = orderTime.isBetween(takeawayStartTime, lastAvailableTime);
     }
 
     return isAvailable;
