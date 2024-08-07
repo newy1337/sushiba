@@ -78,7 +78,7 @@ model Order {
   id        String         @id @default(cuid())
   shortId   Int            @unique @default(autoincrement()) @map("short_id")
   items     OrderItem[]
-  total     Int
+  total     Float
   user      User?          @relation(fields: [userId], references: [id])
   userId    String?        @map("user_id")
   promocode String?
