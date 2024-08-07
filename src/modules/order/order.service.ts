@@ -110,7 +110,7 @@ export class OrderService {
   }
 
   async makeOrder(dto: OrderDto, userId?: string) {
-    if (await isAvailableOrderNow(this.prisma, dto)) {
+    if (!(await isAvailableOrderNow(this.prisma, dto))) {
       throw new HttpException('Not available time', HttpStatus.CONFLICT);
     }
     if (!userId) {

@@ -7,7 +7,6 @@ export const isAvailableOrderNow = async (
   dto: OrderDto,
 ) => {
   try {
-    // Устанавливаем португальский часовой пояс
     const portugalTimezone = 'Europe/Lisbon';
 
     const dayName = dto.details.preorder
@@ -32,8 +31,10 @@ export const isAvailableOrderNow = async (
       const deliveryEndTime = moment(workingHours.deliveryEnd, 'HH:mm').tz(
         portugalTimezone,
       );
+      console.log(deliveryEndTime);
       const lastAvailableTime = deliveryEndTime.subtract(30, 'minutes');
 
+      console.log(orderTime, lastAvailableTime);
       isAvailable = orderTime.isBefore(lastAvailableTime);
     } else if (dto.details.deliveryMethod === 'takeAway') {
       const takeawayEndTime = moment(workingHours.takeawayEnd, 'HH:mm').tz(
