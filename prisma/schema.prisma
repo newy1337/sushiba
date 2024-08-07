@@ -94,7 +94,7 @@ model Order {
 model OrderItem {
   id       String @id @default(cuid())
   quantity Int
-  price    Int
+  price    Float
 
   order     Order?   @relation(fields: [orderId], references: [id])
   orderId   String?  @map("order_id")
