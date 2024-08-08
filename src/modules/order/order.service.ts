@@ -151,7 +151,8 @@ export class OrderService {
 
     if (dto.promoCode !== undefined) {
       const promoCode = await this.promoCode.validate(dto.promoCode, userId);
-      total -= promoCode.discount;
+      const discountAmount = (total * promoCode.discount) / 100; // Вычисляем сумму скидки в денежном выражении
+      total -= discountAmount;
     }
     if (total < 0.5) {
       throw new Error('Amount must be at least $0.50 USD');
