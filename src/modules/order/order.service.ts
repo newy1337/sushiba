@@ -113,6 +113,7 @@ export class OrderService {
     if (!(await isAvailableOrderNow(this.prisma, dto))) {
       throw new HttpException('Not available time', HttpStatus.CONFLICT);
     }
+
     if (!userId) {
       let user = await this.prisma.user.findUnique({
         where: {
@@ -130,6 +131,7 @@ export class OrderService {
 
       userId = user.id;
     }
+
     const productIds = dto.items.map((item) => item.productId);
 
     const products = await this.prisma.product.findMany({
@@ -149,14 +151,20 @@ export class OrderService {
       return acc + product.price * item.quantity;
     }, 0);
 
+    let discountAmount = 0;
+
     if (dto.promoCode !== undefined) {
       const promoCode = await this.promoCode.validate(dto.promoCode, userId);
-      const discountAmount = (total * promoCode.discount) / 100; // Вычисляем сумму скидки в денежном выражении
+      discountAmount = (total * promoCode.discount) / 100;
       total -= discountAmount;
     }
+
+    // Проверка минимальной суммы заказа
     if (total < 0.5) {
       throw new Error('Amount must be at least $0.50 USD');
     }
+
+    // Создание заказа в базе данных
     const orderDetailsJson = JSON.parse(JSON.stringify(dto.details));
     const order = await this.prisma.order.create({
       data: {
@@ -180,29 +188,42 @@ export class OrderService {
     const totalInCents = Math.round(total * 100);
 
     try {
-      const session = await this.stripe.checkout.sessions.create({
-        // payment_method_types:,
-        line_items: dto.items.map((item) => ({
+      const lineItems = dto.items.map((item) => {
+        const product = products.find((p) => p.id === item.productId);
+        const lineItem: any = {
           price_data: {
             currency: 'eur',
             product_data: {
-              name: products.find((p) => p.id === item.productId).name,
+              name: product.name,
             },
-            unit_amount:
-              products.find((p) => p.id === item.productId).price * 100,
+            unit_amount: product.price * 100,
           },
           quantity: item.quantity,
-        })),
+        };
+
+        if (discountAmount > 0) {
+          lineItem.discounts = [
+            {
+              amount: Math.round(discountAmount * 100),
+              description: 'Discount',
+            },
+          ];
+        }
+
+        return lineItem;
+      });
+
+      const session = await this.stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        line_items: lineItems,
         metadata: {
           orderId: order.id,
         },
         mode: 'payment',
-        // payment_intent_data: {
-        //   setup_future_usage: 'on_session',
-        // },
         success_url: 'https://sushiba.eu/pt/myOrders?order=' + order.id,
         cancel_url: 'https://sushiba.eu/pt/cart',
       });
+
       return { sessionId: session.id };
     } catch (error) {
       console.error('Error creating checkout session:', error);
@@ -286,7 +307,7 @@ export class OrderService {
   ) {
     const orderId = session.metadata.orderId;
 
-    const order = await this.prisma.order.update({
+    await this.prisma.order.update({
       where: { id: orderId },
       data: { statusId: 2 },
       include: {
