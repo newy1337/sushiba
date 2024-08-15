@@ -71,6 +71,7 @@ export class PromocodeService {
   }
 
   async validate(code: string, userId?: string) {
+    console.log(code);
     const promoCode = await this.prisma.promoCode.findFirst({
       where: {
         code,

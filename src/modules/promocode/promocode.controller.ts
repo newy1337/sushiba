@@ -11,7 +11,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { PromocodeService } from './promocode.service';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreatePromoCodeDto, UpdatePromoCodeDto } from './dto/promocode.dto';
 import { CurrentUser } from '../../decorators/user.decorator';
 import { Auth } from '../../decorators/auth.decorator';
@@ -76,14 +76,18 @@ export class PromocodeController {
 
   @ApiOperation({ summary: 'Validate promo code' })
   @ApiBearerAuth()
+  @Auth({ optional: true })
   @HttpCode(200)
   @Post('validate')
   @UsePipes(ValidationPipe)
+  @ApiBody({
+    description: 'Promo code to validate',
+    schema: { type: 'object', properties: { code: { type: 'string' } } },
+  })
   async validate(
-    @Param('code') code: string,
+    @Body('code') code: string,
     @CurrentUser('id') userId?: string,
   ) {
-    console.log(1);
     return this.promocodeService.validate(code, userId);
   }
 }
