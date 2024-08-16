@@ -152,10 +152,12 @@ export class OrderService {
     }, 0);
 
     let discountAmount = 0;
+    let discountPercentage = 0;
 
-    if (dto.promoCode !== undefined) {
+    if (dto.promoCode) {
       const promoCode = await this.promoCode.validate(dto.promoCode, userId);
-      discountAmount = (total * promoCode.discount) / 100;
+      discountPercentage = promoCode.discount;
+      discountAmount = (total * discountPercentage) / 100;
       total -= discountAmount;
     }
 
@@ -185,32 +187,23 @@ export class OrderService {
       },
     });
 
-    const totalInCents = Math.round(total * 100);
+    // const totalInCents = Math.round(total * 100);
 
     try {
       const lineItems = dto.items.map((item) => {
         const product = products.find((p) => p.id === item.productId);
-        const lineItem: any = {
+        const unitPrice = product.price * (1 - discountPercentage / 100); // Цена с учетом скидки
+
+        return {
           price_data: {
             currency: 'eur',
             product_data: {
               name: product.name,
             },
-            unit_amount: product.price * 100,
+            unit_amount: Math.round(unitPrice * 100), // Передаем цену уже со скидкой
           },
           quantity: item.quantity,
         };
-
-        if (discountAmount > 0) {
-          lineItem.discounts = [
-            {
-              amount: Math.round(discountAmount * 100),
-              description: 'Discount',
-            },
-          ];
-        }
-
-        return lineItem;
       });
 
       const session = await this.stripe.checkout.sessions.create({
