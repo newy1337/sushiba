@@ -12,11 +12,17 @@ export const isAvailableOrderNow = async (
     const dayName = dto.details.preorder
       ? moment(dto.details.preorderTime).tz(portugalTimezone).format('dddd')
       : moment().tz(portugalTimezone).format('dddd');
+
     const orderTime = dto.details.preorder
       ? moment(dto.details.preorderTime).tz(portugalTimezone)
       : moment().tz(portugalTimezone);
 
-    console.log(orderTime);
+    // Получаем только время (обнуляем дату)
+    const orderTimeOnly = moment(orderTime).set({
+      year: 1970,
+      month: 0,
+      date: 1,
+    });
 
     const workingHours = await prisma.workingHours.findUnique({
       where: {
@@ -30,27 +36,33 @@ export const isAvailableOrderNow = async (
 
     let isAvailable = false;
     if (dto.details.deliveryMethod === 'taxiDelivery') {
-      const deliveryStartTime = moment(workingHours.deliveryStart, 'HH:mm').tz(
-        portugalTimezone,
-      );
-      const deliveryEndTime = moment(workingHours.deliveryEnd, 'HH:mm').tz(
-        portugalTimezone,
-      );
-      const lastAvailableTime = deliveryEndTime.subtract(30, 'minutes');
+      const deliveryStartTime = moment(workingHours.deliveryStart, 'HH:mm')
+        .tz(portugalTimezone)
+        .set({ year: 1970, month: 0, date: 1 });
+      const deliveryEndTime = moment(workingHours.deliveryEnd, 'HH:mm')
+        .tz(portugalTimezone)
+        .set({ year: 1970, month: 0, date: 1 });
+      const lastAvailableTime = moment(deliveryEndTime).subtract(30, 'minutes');
 
       console.log(deliveryStartTime, deliveryEndTime);
-      isAvailable = orderTime.isBetween(deliveryStartTime, lastAvailableTime);
+      isAvailable = orderTimeOnly.isBetween(
+        deliveryStartTime,
+        lastAvailableTime,
+      );
     } else if (dto.details.deliveryMethod === 'takeAway') {
-      const takeawayStartTime = moment(workingHours.takeawayStart, 'HH:mm').tz(
-        portugalTimezone,
-      );
-      const takeawayEndTime = moment(workingHours.takeawayEnd, 'HH:mm').tz(
-        portugalTimezone,
-      );
-      const lastAvailableTime = takeawayEndTime.subtract(30, 'minutes');
+      const takeawayStartTime = moment(workingHours.takeawayStart, 'HH:mm')
+        .tz(portugalTimezone)
+        .set({ year: 1970, month: 0, date: 1 });
+      const takeawayEndTime = moment(workingHours.takeawayEnd, 'HH:mm')
+        .tz(portugalTimezone)
+        .set({ year: 1970, month: 0, date: 1 });
+      const lastAvailableTime = moment(takeawayEndTime).subtract(30, 'minutes');
 
-      console.log(takeawayStartTime, takeawayEndTime);
-      isAvailable = orderTime.isBetween(takeawayStartTime, lastAvailableTime);
+      console.log(takeawayStartTime, orderTimeOnly, takeawayEndTime);
+      isAvailable = orderTimeOnly.isBetween(
+        takeawayStartTime,
+        lastAvailableTime,
+      );
     }
 
     return isAvailable;

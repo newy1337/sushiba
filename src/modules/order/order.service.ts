@@ -161,12 +161,10 @@ export class OrderService {
       total -= discountAmount;
     }
 
-    // Проверка минимальной суммы заказа
     if (total < 0.5) {
       throw new Error('Amount must be at least $0.50 USD');
     }
 
-    // Создание заказа в базе данных
     const orderDetailsJson = JSON.parse(JSON.stringify(dto.details));
     const order = await this.prisma.order.create({
       data: {
@@ -192,7 +190,7 @@ export class OrderService {
     try {
       const lineItems = dto.items.map((item) => {
         const product = products.find((p) => p.id === item.productId);
-        const unitPrice = product.price * (1 - discountPercentage / 100); // Цена с учетом скидки
+        const unitPrice = product.price * (1 - discountPercentage / 100);
 
         return {
           price_data: {
@@ -200,7 +198,7 @@ export class OrderService {
             product_data: {
               name: product.name,
             },
-            unit_amount: Math.round(unitPrice * 100), // Передаем цену уже со скидкой
+            unit_amount: Math.round(unitPrice * 100),
           },
           quantity: item.quantity,
         };
@@ -227,7 +225,7 @@ export class OrderService {
   async updateStatus(dto: UpdateOrderStatusDto, orderId: string) {
     interface OrderDetails {
       deliveryMethod?: string;
-      // Add other properties as needed
+      preorder?: boolean;
     }
     const order = await this.prisma.order.findFirst({
       where: {
@@ -256,7 +254,11 @@ export class OrderService {
 
       const details = order.details as OrderDetails;
       if (orderUpdated.status.name === 'Preparing') {
-        message = `Hey there!\n\nSushiba is here, thank you for your order (#${orderUpdated.shortId}).\n\nWe are working our magic to get everything ready, and your order will be ready to go as soon as possible.\nCheck your order status here: https://sushiba.eu/pt/myOrders?order=${order.id}`;
+        if (details.preorder) {
+          message = `Hey there!\n\nSushiba is here, thank you for your order (#${orderUpdated.shortId}).\n\nWe are working our magic to get everything ready, and your order will be ready to go as soon as possible.\nCheck your order status here: https://sushiba.eu/pt/myOrders?order=${order.id}`;
+        } else {
+          message = `Hey there!\n\nSushiba is here, thank you for your order (#${orderUpdated.shortId}).\n\nWe are working our magic to get everything ready, and your order will be ready to go as soon as possible.\nCheck your order status here: https://sushiba.eu/pt/myOrders?order=${order.id}`;
+        }
       } else if (details.deliveryMethod === 'takeAway') {
         message = `Your order is ready and everything looks absolutely delicious!\n\nYou can pick it up in our cafe.\n\nOur address: Rua Artilharia 1, 98A, Sushiba.`;
       }
