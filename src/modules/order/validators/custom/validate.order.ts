@@ -9,11 +9,12 @@ export const isAvailableOrderNow = async (
   try {
     const portugalTimezone = 'Europe/Lisbon';
 
-    const dayName = dto.details.preorder
+    const preorder = dto.details.preorder;
+    const dayName = preorder
       ? moment(dto.details.preorderTime).tz(portugalTimezone).format('dddd')
       : moment().tz(portugalTimezone).format('dddd');
 
-    const orderTime = dto.details.preorder
+    const orderTime = preorder
       ? moment(dto.details.preorderTime).tz(portugalTimezone)
       : moment().tz(portugalTimezone);
 
@@ -47,7 +48,9 @@ export const isAvailableOrderNow = async (
       console.log(deliveryStartTime, deliveryEndTime);
       isAvailable = orderTimeOnly.isBetween(
         deliveryStartTime,
-        lastAvailableTime,
+        preorder ? deliveryEndTime : lastAvailableTime,
+        undefined,
+        '[]',
       );
     } else if (dto.details.deliveryMethod === 'takeAway') {
       const takeawayStartTime = moment(workingHours.takeawayStart, 'HH:mm')
@@ -61,7 +64,9 @@ export const isAvailableOrderNow = async (
       console.log(takeawayStartTime, orderTimeOnly, takeawayEndTime);
       isAvailable = orderTimeOnly.isBetween(
         takeawayStartTime,
-        lastAvailableTime,
+        preorder ? takeawayEndTime : lastAvailableTime,
+        undefined,
+        '[]',
       );
     }
 
