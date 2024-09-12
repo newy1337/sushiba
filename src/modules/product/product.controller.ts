@@ -63,14 +63,13 @@ export class ProductController {
   @UsePipes(ValidationPipe)
   @UseInterceptors(FileInterceptor('image'))
   async create(
-    @Body('dto') dto: string,
+    @Body('dto') dto: CreateProductDto,
     @UploadedFile()
     imageFile: Express.Multer.File,
   ) {
     console.log(dto);
-    const parsedDto: CreateProductDto = JSON.parse(dto);
 
-    const dtoInstance = plainToInstance(CreateProductDto, parsedDto);
+    const dtoInstance = plainToInstance(CreateProductDto, dto);
 
     // Выполняем валидацию
     const errors = await validate(dtoInstance);
@@ -79,7 +78,7 @@ export class ProductController {
       throw new BadRequestException(getAllConstraints(errors));
     }
 
-    return this.productService.create(parsedDto, imageFile);
+    return this.productService.create(dto, imageFile);
   }
 
   @ApiBearerAuth()
