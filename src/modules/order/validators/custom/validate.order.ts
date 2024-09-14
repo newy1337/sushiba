@@ -17,13 +17,14 @@ export const isAvailableOrderNow = async (
     const orderTime = preorder
       ? moment(dto.details.preorderTime).tz(portugalTimezone)
       : moment().tz(portugalTimezone);
-
-    // Получаем только время (обнуляем дату)
-    const orderTimeOnly = moment(orderTime).set({
-      year: 1970,
-      month: 0,
-      date: 1,
-    });
+    console.log('order_time:' + orderTime);
+    const orderTimeOnly = moment(orderTime)
+      .set({
+        year: 1970,
+        month: 0,
+        date: 1,
+      })
+      .tz(portugalTimezone);
 
     const workingHours = await prisma.workingHours.findUnique({
       where: {
