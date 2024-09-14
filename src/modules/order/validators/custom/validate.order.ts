@@ -16,7 +16,7 @@ export const isAvailableOrderNow = async (
 
     const orderTime = preorder
       ? moment(dto.details.preorderTime).tz(portugalTimezone)
-      : moment().tz(portugalTimezone);
+      : moment().tz(portugalTimezone).format('HH:mm');
     console.log('order_time:' + orderTime);
     const orderTimeOnly = moment(orderTime)
       .set({
