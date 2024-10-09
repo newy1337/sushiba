@@ -78,7 +78,7 @@ export class OrderService {
         pageSizeNumber,
         pageNumber,
       },
-      ordersWithPrevious,
+      orders: ordersWithPrevious,
     };
   }
 
