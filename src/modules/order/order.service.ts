@@ -57,7 +57,7 @@ export class OrderService {
   }
 
   async getActive() {
-    return this.prisma.order.findMany({
+    const activeOrders = await this.prisma.order.findMany({
       where: {
         status: {
           name: {
@@ -73,6 +73,31 @@ export class OrderService {
         },
       },
     });
+
+    return await Promise.all(
+      activeOrders.map(async (order) => {
+        const previousOrders = await this.prisma.order.findMany({
+          where: {
+            userId: order.userId,
+          },
+          orderBy: {
+            createdAt: 'desc',
+          },
+          include: {
+            items: {
+              include: {
+                product: {},
+              },
+            },
+          },
+        });
+
+        return {
+          ...order,
+          previousOrders, // Добавляем последние заказы того же пользователя
+        };
+      }),
+    );
   }
 
   async getById(id: string) {
