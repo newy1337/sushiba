@@ -43,6 +43,32 @@ export class OrderService {
       skip: skip,
       take: pageSizeNumber,
     });
+
+    const ordersWithPrevious = await Promise.all(
+      orders.map(async (order) => {
+        const previousOrders = await this.prisma.order.findMany({
+          where: {
+            userId: order.userId,
+          },
+          orderBy: {
+            createdAt: 'desc',
+          },
+          include: {
+            items: {
+              include: {
+                product: {},
+              },
+            },
+          },
+        });
+
+        return {
+          ...order,
+          previousOrders, // Добавляем последние заказы того же пользователя
+        };
+      }),
+    );
+
     const totalPages = Math.ceil(totalCount / pageSize);
 
     return {
@@ -52,7 +78,7 @@ export class OrderService {
         pageSizeNumber,
         pageNumber,
       },
-      orders,
+      ordersWithPrevious,
     };
   }
 
