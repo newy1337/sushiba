@@ -11,6 +11,7 @@ import { OrderDto, UpdateOrderStatusDto } from './dtos/order.dto';
 import { PromocodeService } from '../promocode/promocode.service';
 import { sendSMS } from '../../utils/twilio';
 import { isAvailableOrderNow } from './validators/custom/validate.order';
+import { not } from 'rxjs/internal/util/not';
 
 @Injectable()
 export class OrderService {
@@ -49,6 +50,9 @@ export class OrderService {
         const previousOrders = await this.prisma.order.findMany({
           where: {
             userId: order.userId,
+            id: {
+              not: order.id,
+            },
           },
           orderBy: {
             createdAt: 'desc',
@@ -105,6 +109,9 @@ export class OrderService {
         const previousOrders = await this.prisma.order.findMany({
           where: {
             userId: order.userId,
+            id: {
+              not: order.id,
+            },
           },
           orderBy: {
             createdAt: 'desc',
