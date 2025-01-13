@@ -232,6 +232,7 @@ export class OrderService {
     const order = await this.prisma.order.create({
       data: {
         details: orderDetailsJson,
+        promocode: dto.promoCode,
         items: {
           create: dto.items.map((item) => ({
             productId: item.productId,
