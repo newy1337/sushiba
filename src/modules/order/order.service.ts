@@ -233,21 +233,21 @@ export class OrderService {
       price:
         products.find((p) => p.id === item.productId).price * item.quantity,
     }));
-    let giftProduct = null;
-    if (total > 50) {
-      const giftProductId = 'cm643gyke004k127n5d8m19ob';
-      giftProduct = await this.prisma.product.findUnique({
-        where: { id: giftProductId },
-      });
-
-      if (giftProduct) {
-        itemsToCreate.push({
-          productId: giftProduct.id,
-          quantity: 1,
-          price: 0,
-        });
-      }
-    }
+    // let giftProduct = null;
+    // if (total > 50) {
+    //   const giftProductId = 'cm643gyke004k127n5d8m19ob';
+    //   giftProduct = await this.prisma.product.findUnique({
+    //     where: { id: giftProductId },
+    //   });
+    //
+    //   if (giftProduct) {
+    //     itemsToCreate.push({
+    //       productId: giftProduct.id,
+    //       quantity: 1,
+    //       price: 0,
+    //     });
+    //   }
+    // }
 
     const orderDetailsJson = JSON.parse(JSON.stringify(combinedDetails));
     const order = await this.prisma.order.create({
@@ -283,18 +283,18 @@ export class OrderService {
         };
       });
 
-      if (giftProduct) {
-        lineItems.push({
-          price_data: {
-            currency: 'eur',
-            product_data: {
-              name: giftProduct.name + ' (PROMO)',
-            },
-            unit_amount: 0,
-          },
-          quantity: 1,
-        });
-      }
+      // if (giftProduct) {
+      //   lineItems.push({
+      //     price_data: {
+      //       currency: 'eur',
+      //       product_data: {
+      //         name: giftProduct.name + ' (PROMO)',
+      //       },
+      //       unit_amount: 0,
+      //     },
+      //     quantity: 1,
+      //   });
+      // }
 
       const session = await this.stripe.checkout.sessions.create({
         payment_method_types: ['card'],
